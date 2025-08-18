@@ -11,6 +11,20 @@ Your Hostinger KVM8 VPS specifications:
 
 Your VPS exceeds all requirements for running CodexOS!
 
+## 🆕 **New Security Features Available**
+
+### **Enterprise-Grade Security**
+- **Agent Engine Guardrails**: Tool allow-listing and resource quotas
+- **Execution Sandboxing**: Isolated process execution with seccomp profiles
+- **Multi-Tenant Isolation**: Complete data separation and resource limits
+- **Comprehensive Monitoring**: Prometheus + Grafana with security alerts
+
+### **Production-Ready Features**
+- **Database Migrations**: Alembic with automatic schema management
+- **Health Checks**: Docker health monitoring and auto-recovery
+- **Resource Limits**: CPU and memory quotas for all services
+- **Audit Logging**: Complete activity tracking for compliance
+
 ## Step-by-Step Deployment
 
 ### 1. Connect to Your VPS

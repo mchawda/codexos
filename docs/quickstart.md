@@ -18,14 +18,15 @@ Visit [codexos.dev](https://codexos.dev) and create your free account. You'll ge
 
 ## 2. Install the CLI
 
-### Using npm
+### Using pip (Recommended)
 ```bash
-npm install -g @codexos/cli
+cd apps/backend
+pip install -e .
 ```
 
-### Using pip
+### Using npm (Alternative)
 ```bash
-pip install codexos-cli
+npm install -g @codexos/cli
 ```
 
 ### Verify installation
@@ -34,7 +35,35 @@ codexos --version
 # Output: CodexOS CLI v1.0.0
 ```
 
-## 3. Authenticate
+## 3. Quick Development Setup
+
+### One-Command Development
+```bash
+# Start the entire development stack
+make dev
+
+# This will:
+# - Install dependencies
+# - Start database services
+# - Start backend and frontend
+# - Provide access URLs
+```
+
+### Alternative Manual Setup
+```bash
+# Install dependencies
+./setup.sh
+
+# Start services
+docker compose up -d
+
+# Access your applications:
+# 🌐 Frontend: http://localhost:3000
+# 🔌 Backend: http://localhost:8001/api/v1/docs
+# 📊 Grafana: http://localhost:3001
+```
+
+## 4. Authenticate
 
 ```bash
 codexos auth login

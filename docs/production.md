@@ -36,6 +36,26 @@ This guide covers deploying CodexOS to a production environment with high availa
                           └─────────────┘
 ```
 
+## 🆕 Enhanced Security Features
+
+### **Agent Engine Guardrails**
+- **Tool Allow-listing**: Only approved tools can be executed
+- **Resource Quotas**: CPU, memory, and network limits per execution
+- **Execution Sandboxing**: Isolated process execution with seccomp profiles
+- **Memory Tier Management**: Ephemeral, session, and semantic memory with retention
+
+### **Runtime Security**
+- **Interruption & Rollback**: Hooks for execution control and recovery
+- **Network Isolation**: Egress controls and path restrictions
+- **File System Controls**: Restricted access to specific directories
+- **Process Monitoring**: Real-time resource usage tracking
+
+### **Multi-Tenant Security**
+- **Complete Data Isolation**: Row-level security and tenant context
+- **Resource Quotas**: Per-tenant limits and monitoring
+- **Audit Logging**: Complete activity tracking with cryptographic signatures
+- **Access Controls**: Role-based permissions with fine-grained policies
+
 ## Deployment Steps
 
 ### 1. Server Setup
