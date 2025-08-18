@@ -49,23 +49,31 @@ CodexOS/
 - Python 3.11+ (for local development)
 - PNPM 8+ (for monorepo management)
 
+**📋 Full Requirements**: See [REQUIREMENTS.md](REQUIREMENTS.md) for complete system requirements and dependencies.
+
 ### Running with Docker
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/codexos/codexos.git
-cd codexos
+git clone https://github.com/mchawda/codexos.git
+cd CodexOS
 ```
 
-2. Copy environment files:
+2. **Quick Setup** (recommended):
 ```bash
-cp apps/backend/.env.example apps/backend/.env
-cp apps/web/.env.example apps/web/.env
+./setup.sh
 ```
 
-3. Start the stack:
+3. **Manual Setup** (alternative):
 ```bash
-docker-compose up -d
+# Copy environment files
+cp env.production.example .env.local
+# Edit .env.local with your API keys
+```
+
+4. Start the stack:
+```bash
+docker compose up -d
 ```
 
 4. Access the applications:
@@ -85,33 +93,48 @@ pnpm install
 pnpm dev
 ```
 
+## 🚀 Setup & Installation
+
+### Automated Setup
+```bash
+# Run the setup script to install all dependencies
+./setup.sh
+```
+
+This script will:
+- ✅ Check system requirements (Python 3.11+, Node.js 18+, Docker)
+- ✅ Install Python dependencies with Poetry
+- ✅ Install Node.js dependencies with pnpm
+- ✅ Verify port availability
+- ✅ Create environment configuration
+
+### Manual Setup
+If you prefer manual installation, see [REQUIREMENTS.md](REQUIREMENTS.md) for detailed steps.
+
 ## 🔧 Configuration
 
-### Backend Configuration
+### Environment Configuration
 
-Edit `apps/backend/.env`:
+Edit `.env.local` for local development:
 
 ```env
-# Database
-DATABASE_URL=postgresql+asyncpg://codexos:password@localhost:5432/codexos_db
+# Database (auto-configured by Docker)
+DATABASE_URL=postgresql://codexos:codexos_secure_password@localhost:5432/codexos_db
 
-# LLM Providers
-OPENAI_API_KEY=sk-xxxx
-ANTHROPIC_API_KEY=claude-xxx
+# LLM Providers (REQUIRED)
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # Security
 SECRET_KEY=your-secret-key-here
 VAULT_MASTER_KEY=auto-generate-or-paste
+
+# Payment (optional for marketplace)
+STRIPE_API_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-### Frontend Configuration
-
-Edit `apps/web/.env`:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8001/api/v1
-NEXT_PUBLIC_WS_URL=ws://localhost:8001/ws
-```
+**Note**: Frontend configuration is automatically handled by the Docker environment variables.
 
 ## 📖 API Documentation
 

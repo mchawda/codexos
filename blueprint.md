@@ -2,7 +2,11 @@
 
 > "A next-level autonomous engineering OS. Modular, agentic, real-time, and scalable."
 
----
+## ⚙️ Core Philosophy
+- Build an **MCP-native AI agentic system** that can ingest, reason, and act across projects
+- Prioritize modularity, security, speed, and elegance (UX + DevEx)
+- Empower devs to spawn, compose, debug, and deploy autonomous AI agents
+- Be future-proof: local-first, multi-agent, RAG-native, private LLM optional
 
 ## 🧱 System Architecture Overview
 
