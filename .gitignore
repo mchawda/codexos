@@ -23,10 +23,15 @@ wheels/
 MANIFEST
 
 # Environment files
+# env
 .env
+.env.*
+!.env.example
+!.env.production.example
+
+# local overrides
+env.local
 .env.local
-.env.production
-.env.*.local
 
 # Python
 .pytest_cache/

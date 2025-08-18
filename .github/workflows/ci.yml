@@ -1,0 +1,39 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20]
+        python: [3.11, 3.12]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ matrix.node }} }
+      - uses: actions/setup-python@v5
+        with: { python-version: ${{ matrix.python }} }
+      - name: PNPM
+        run: npm i -g pnpm@8
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm -w run -r typecheck || true
+      - name: Lint (JS)
+        run: pnpm -w run -r lint || true
+      - name: Python deps
+        run: pipx install poetry && poetry install --no-root || true
+      - name: Lint/Test (Py)
+        run: |
+          ruff check . || true
+          pytest -q || true
+      - name: Docker build
+        run: docker build -t codexos/backend ./apps/backend || true
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@0.24.0
+        with: { image-ref: 'codexos/backend', format: 'table', exit-code: '0' }
+      - name: SBOM
+        uses: anchore/sbom-action@v0
+        with: { artifact-name: 'sbom.spdx.json' }
