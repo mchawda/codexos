@@ -1,0 +1,38 @@
+# Code owners for CodexOS
+# This file defines who is responsible for different parts of the codebase
+
+# Global owners
+* @mchawda
+
+# Backend (Python/FastAPI)
+/apps/backend/ @mchawda
+/apps/backend/app/ @mchawda
+/apps/backend/tests/ @mchawda
+
+# Frontend (Next.js/React)
+/apps/web/ @mchawda
+/apps/web/src/ @mchawda
+/apps/web/tests/ @mchawda
+
+# RAG Engine
+/packages/rag-engine/ @mchawda
+
+# Infrastructure & DevOps
+/docker-compose*.yml @mchawda
+/Dockerfile* @mchawda
+/nginx/ @mchawda
+/monitoring/ @mchawda
+/deploy.sh @mchawda
+
+# Documentation
+/docs/ @mchawda
+/README.md @mchawda
+/SECURITY.md @mchawda
+
+# CI/CD
+/.github/ @mchawda
+
+# Configuration files
+/.editorconfig @mchawda
+/.gitattributes @mchawda
+/CODEOWNERS @mchawda

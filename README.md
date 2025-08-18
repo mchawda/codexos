@@ -64,14 +64,19 @@ cd CodexOS
 ./setup.sh
 ```
 
-3. **Manual Setup** (alternative):
+3. **One-Command Development** (new!):
+```bash
+make dev
+```
+
+4. **Manual Setup** (alternative):
 ```bash
 # Copy environment files
 cp env.production.example .env.local
 # Edit .env.local with your API keys
 ```
 
-4. Start the stack:
+5. Start the stack:
 ```bash
 docker compose up -d
 ```
@@ -80,6 +85,55 @@ docker compose up -d
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8001/api/v1/docs
 - ChromaDB: http://localhost:8000
+
+### CLI Usage
+
+CodexOS now includes a powerful CLI for task execution and system management:
+
+```bash
+# Install CLI (after setup)
+cd apps/backend
+pip install -e .
+
+# Run tasks with specific tools
+codexos run "Review this Python code" --tools fs,web --plan-only
+
+# Check system status
+codexos status
+
+# Monitor system health
+codexos health
+
+# View system logs
+codexos logs --level error --lines 50
+```
+
+### Makefile Commands
+
+Use the Makefile for common development tasks:
+
+```bash
+# Development
+make dev              # Start full development environment
+make dev-backend      # Start only backend services
+make dev-frontend     # Start only frontend services
+
+# Testing
+make test             # Run all tests
+make test-e2e         # Run E2E tests with Playwright
+make test-load        # Run load tests with Locust
+
+# Quality
+make lint             # Run all linters
+make format           # Format all code
+make typecheck        # Run type checking
+make security-scan    # Run security scans
+
+# Maintenance
+make clean            # Clean build artifacts
+make install-deps     # Install dependencies
+make update-deps      # Update dependencies
+```
 
 ### Local Development
 

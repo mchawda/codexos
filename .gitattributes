@@ -1,0 +1,41 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Python files
+*.py text diff=python
+
+# JavaScript/TypeScript files
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.json text
+
+# Markdown files
+*.md text diff=markdown
+
+# Shell scripts
+*.sh text eol=lf
+
+# Docker files
+Dockerfile* text eol=lf
+*.dockerfile text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+
+# Lock files
+package-lock.json binary
+yarn.lock binary
+pnpm-lock.yaml text
+poetry.lock text
+
+# Environment files (should not be committed)
+.env* text eol=lf
