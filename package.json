@@ -1,0 +1,33 @@
+{
+  "name": "codexos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A next-level autonomous engineering OS. Modular, agentic, real-time, and scalable.",
+  "scripts": {
+    "start": "node start.js",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "prod": "turbo start",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "clean": "turbo clean && rm -rf node_modules",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "setup": "node start.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4",
+    "turbo": "^1.11.3",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "pnpm@8.14.1",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
