@@ -51,6 +51,23 @@ CodexOS/
 
 **📋 Full Requirements**: See [REQUIREMENTS.md](REQUIREMENTS.md) for complete system requirements and dependencies.
 
+### 🚀 Get Started in 60 Seconds
+
+```bash
+# Clone and setup
+git clone https://github.com/mchawda/codexos.git
+cd CodexOS
+./setup.sh
+
+# Start everything with one command
+make dev
+
+# Access your applications
+# 🌐 Frontend: http://localhost:3000
+# 🔌 Backend: http://localhost:8001/api/v1/docs
+# 📊 Grafana: http://localhost:3001
+```
+
 ### Running with Docker
 
 1. Clone the repository:
@@ -190,6 +207,35 @@ STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 **Note**: Frontend configuration is automatically handled by the Docker environment variables.
 
+## 🧪 Try It
+
+### Local Development Credentials
+
+**Default Admin User** (for local development only):
+- **Email**: admin@codexos.local
+- **Password**: admin123
+- **Role**: Superuser
+
+**Default Tenant**:
+- **Name**: CodexOS Development
+- **Domain**: localhost
+
+### Quick Test Commands
+
+```bash
+# Check system health
+make health
+
+# Run all tests
+make test
+
+# Check database status
+make db-status
+
+# View system logs
+codexos logs --level info --lines 20
+```
+
 ## 📖 API Documentation
 
 ### Authentication
@@ -254,6 +300,15 @@ export class CustomNode extends BaseNode {
 - Audit logging for SOC2 & ISO 27001 compliance
 - Sandboxed action execution
 - Encrypted vault with key rotation
+
+## 📚 Documentation
+
+- **[Architecture Guide](docs/architecture.md)** - System design and technical details
+- **[Security & Threat Model](docs/threat-model.md)** - Security analysis and controls
+- **[Production Guide](docs/production.md)** - Deployment and operations
+- **[API Reference](docs/api/api-reference.md)** - Complete API documentation
+- **[Contributing Guidelines](CONTRIBUTING.md)** - How to contribute to CodexOS
+- **[Security Policy](SECURITY.md)** - Vulnerability reporting and security practices
 
 ## 🚀 Production Deployment
 

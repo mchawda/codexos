@@ -1,8 +1,8 @@
 
 # LICENSE AGREEMENT
 
-**Effective Date:** 23 July 2025
-**Product:** [Insert Repository/Product Name]  
+**Effective Date:** 19 August 2025
+**Product:** CodexOS 
 **Owner:** NIA Pte Ltd  
 **Jurisdiction:** Global / Singapore Law
 

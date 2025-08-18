@@ -189,6 +189,23 @@ db-seed:
 	@echo "🌱 Seeding database..."
 	cd apps/backend && python -m app.db.seed
 
+db-init:
+	@echo "🗄️ Initializing database..."
+	cd apps/backend && alembic upgrade head
+	@echo "🌱 Seeding database..."
+	cd apps/backend && python -m app.db.seed
+
+db-reset:
+	@echo "🗄️ Resetting database..."
+	cd apps/backend && alembic downgrade base
+	cd apps/backend && alembic upgrade head
+	@echo "🌱 Seeding database..."
+	cd apps/backend && python -m app.db.seed
+
+db-status:
+	@echo "🗄️ Database migration status..."
+	cd apps/backend && alembic current
+
 # Monitoring
 monitor:
 	@echo "📊 Starting monitoring stack..."
