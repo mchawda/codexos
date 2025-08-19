@@ -23,7 +23,7 @@ import {
   Clock,
   CheckCircle
 } from 'lucide-react';
-import Navigation from '@/components/layout/navigation';
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';

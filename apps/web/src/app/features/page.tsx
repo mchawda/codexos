@@ -23,7 +23,7 @@ import {
   Users,
   BarChart
 } from 'lucide-react';
-import Navigation from '@/components/layout/navigation';
+
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -162,7 +162,7 @@ const itemVariants = {
 export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+
       
       {/* Hero Section */}
       <section className="relative pt-44 pb-20 px-4 overflow-hidden">

@@ -144,26 +144,3 @@ volumes:
   redis_data:
   chroma_data:
   ollama_data:
-
-services:
-  backend:
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:8001/health || exit 1"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
-    restart: unless-stopped
-    read_only: true
-    tmpfs: ["/tmp"]
-    deploy:
-      resources:
-        limits: { cpus: "1.0", memory: 1G }
-
-  web:
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:3000/health || exit 1"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
-    restart: unless-stopped
-    read_only: true
