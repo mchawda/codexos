@@ -94,6 +94,32 @@
     @apply border border-blue-500/20;
   }
 
+  /* Light theme glass effects */
+  .light .glass {
+    @apply bg-black/5 backdrop-blur-md border border-black/10;
+  }
+
+  .light .glass-dark {
+    background: rgba(0, 0, 0, 0.02);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    @apply border border-black/5;
+  }
+
+  .light .glass-ultra {
+    background: rgba(0, 0, 0, 0.01);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    @apply border border-black/5;
+  }
+
+  .light .glass-blue {
+    background: rgba(59, 130, 246, 0.1);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    @apply border border-blue-500/30;
+  }
+
   /* Gradient mesh background */
   .gradient-mesh {
     background: radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
@@ -108,9 +134,30 @@
     background-size: 24px 24px;
   }
 
-  /* Cosmic background */
-  .cosmic-bg {
-    background: #0A0B14;
+  .light .space-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.03) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  /* Custom animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Cosmic background */
+.cosmic-bg {
+  background: #0A0B14;
+  position: relative;
+}
+
+  .light .cosmic-bg {
+    background: #FAFAFA;
     position: relative;
   }
 
@@ -121,6 +168,11 @@
     background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
     background-size: 24px 24px;
     opacity: 0.2;
+  }
+
+  .light .cosmic-bg::before {
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.02) 1px, transparent 0);
+    opacity: 0.3;
   }
 
   /* Glow effects */

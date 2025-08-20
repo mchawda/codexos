@@ -110,7 +110,7 @@ export default function MarketplacePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+      {/* Navigation is now handled by LayoutProvider */}
       
       {/* Hero Section */}
       <section className="relative pt-44 pb-20 px-4 overflow-hidden">

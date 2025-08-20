@@ -19,6 +19,8 @@ import {
   Code2,
   Brain,
   Sparkles,
+  Layout,
+  Plus,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,6 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { RAGComposer } from '@/components/dashboard/rag-composer';
 
 interface Document {
   id: string;
@@ -95,8 +98,9 @@ export default function RAGEnginePage() {
       status: 'processing',
     },
   ]);
-  const [selectedTab, setSelectedTab] = useState('search');
+  const [selectedTab, setSelectedTab] = useState('composer');
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showComposer, setShowComposer] = useState(false);
 
   const handleSearch = () => {
     // Simulate search results
@@ -152,12 +156,35 @@ export default function RAGEnginePage() {
             <Brain className="w-3 h-3 mr-1" />
             {documents.reduce((acc, doc) => acc + doc.chunks, 0)} Chunks
           </Badge>
+          <Button
+            onClick={() => setShowComposer(true)}
+            className="bg-orange-600 hover:bg-orange-700"
+          >
+            <Layout className="w-4 h-4 mr-2" />
+            Open Composer
+          </Button>
         </div>
       </div>
 
+      {/* Show Composer Modal */}
+      {showComposer && (
+        <RAGComposer
+          showAsModal
+          onClose={() => setShowComposer(false)}
+          onExecuteWithAgent={(agentId, context) => {
+            console.log('Execute with agent:', agentId, context);
+            setShowComposer(false);
+          }}
+        />
+      )}
+
       {/* Tabs */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="composer">
+            <Layout className="w-4 h-4 mr-2" />
+            Composer
+          </TabsTrigger>
           <TabsTrigger value="search">
             <Search className="w-4 h-4 mr-2" />
             Search
@@ -171,6 +198,15 @@ export default function RAGEnginePage() {
             Ingest
           </TabsTrigger>
         </TabsList>
+
+        {/* Composer Tab */}
+        <TabsContent value="composer" className="space-y-6">
+          <RAGComposer
+            onExecuteWithAgent={(agentId, context) => {
+              console.log('Execute with agent:', agentId, context);
+            }}
+          />
+        </TabsContent>
 
         {/* Search Tab */}
         <TabsContent value="search" className="space-y-6">

@@ -2,10 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { 
-  Handshake, 
+  Users, 
   Building2, 
   Rocket, 
-  Users,
   Award,
   Globe,
   Zap,
@@ -104,7 +103,7 @@ export default function PartnersPage() {
             transition={{ duration: 0.5 }}
             className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 mb-8"
           >
-            <Handshake className="w-10 h-10 text-white" />
+            <Users className="w-10 h-10 text-white" />
           </motion.div>
           
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gradient">

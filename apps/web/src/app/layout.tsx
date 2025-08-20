@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
-import Navigation from '@/components/layout/navigation';
-import Footer from '@/components/layout/footer';
+import LayoutProvider from '@/components/providers/layout-provider';
+import { UserProvider } from '@/contexts/user-context';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -37,20 +37,14 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
+          themes={['light', 'dark']}
         >
-          <div className="min-h-screen antialiased relative flex flex-col">
-            {/* Space grid background */}
-            <div className="fixed inset-0 space-grid pointer-events-none opacity-20" />
-            
-            <Navigation />
-            
-            <main className="flex-1 pt-24">
+          <UserProvider>
+            <LayoutProvider>
               {children}
-            </main>
-            
-            <Footer />
-          </div>
-          <Toaster />
+            </LayoutProvider>
+            <Toaster />
+          </UserProvider>
         </ThemeProvider>
       </body>
     </html>

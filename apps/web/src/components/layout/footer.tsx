@@ -79,7 +79,7 @@ export default function Footer() {
                 <Youtube className="w-3.5 h-3.5 text-white/60" />
               </a>
               <a 
-                href="https://github.com/codexos" 
+                href="https://github.com/mchawda" 
                 className="w-8 h-8 rounded-lg flex items-center justify-center border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/5 glass-ultra"
                 aria-label="GitHub"
               >

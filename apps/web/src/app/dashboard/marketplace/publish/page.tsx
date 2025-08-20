@@ -35,7 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+// import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -57,12 +57,12 @@ export default function PublishMarketplaceItem() {
     shortDescription: '',
     longDescription: '',
     itemType: 'agent_template',
-    categories: [],
-    tags: [],
+    categories: [] as string[],
+    tags: [] as string[],
     
     // Media
     thumbnailUrl: '',
-    previewImages: [],
+    previewImages: [] as string[],
     demoVideoUrl: '',
     
     // Pricing
@@ -75,8 +75,8 @@ export default function PublishMarketplaceItem() {
     
     // Technical
     agentFlowId: '',
-    features: [],
-    requirements: {},
+    features: [] as string[],
+    requirements: {} as Record<string, any>,
     documentationUrl: '',
     supportEmail: '',
     
@@ -381,42 +381,56 @@ export default function PublishMarketplaceItem() {
             <div className="space-y-6">
               <div>
                 <Label>Pricing Model *</Label>
-                <RadioGroup
-                  value={formData.pricingModel}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, pricingModel: value })
-                  }
-                >
-                  <div className="space-y-3">
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <RadioGroupItem value="free" className="mt-1" />
-                      <div>
-                        <div className="font-medium">Free</div>
-                        <div className="text-sm text-muted-foreground">
-                          No cost to users
-                        </div>
+                <div className="space-y-3">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="pricingModel" 
+                      value="free" 
+                      checked={formData.pricingModel === 'free'}
+                      onChange={(e) => setFormData({ ...formData, pricingModel: e.target.value })}
+                      className="mt-1" 
+                    />
+                    <div>
+                      <div className="font-medium">Free</div>
+                      <div className="text-sm text-muted-foreground">
+                        No cost to users
                       </div>
-                    </label>
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <RadioGroupItem value="one_time" className="mt-1" />
-                      <div>
-                        <div className="font-medium">One-time Purchase</div>
-                        <div className="text-sm text-muted-foreground">
-                          Users pay once for lifetime access
-                        </div>
+                    </div>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="pricingModel" 
+                      value="one_time" 
+                      checked={formData.pricingModel === 'one_time'}
+                      onChange={(e) => setFormData({ ...formData, pricingModel: e.target.value })}
+                      className="mt-1" 
+                    />
+                    <div>
+                      <div className="font-medium">One-time Purchase</div>
+                      <div className="text-sm text-muted-foreground">
+                        Users pay once for lifetime access
                       </div>
-                    </label>
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <RadioGroupItem value="subscription" className="mt-1" />
-                      <div>
-                        <div className="font-medium">Subscription</div>
-                        <div className="text-sm text-muted-foreground">
-                          Recurring monthly or yearly payments
-                        </div>
+                    </div>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="pricingModel" 
+                      value="subscription" 
+                      checked={formData.pricingModel === 'subscription'}
+                      onChange={(e) => setFormData({ ...formData, pricingModel: e.target.value })}
+                      className="mt-1" 
+                    />
+                    <div>
+                      <div className="font-medium">Subscription</div>
+                      <div className="text-sm text-muted-foreground">
+                        Recurring monthly or yearly payments
                       </div>
-                    </label>
-                  </div>
-                </RadioGroup>
+                    </div>
+                  </label>
+                </div>
               </div>
 
               {formData.pricingModel === 'one_time' && (

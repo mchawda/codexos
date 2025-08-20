@@ -20,7 +20,7 @@ const blogPosts = [
   {
     id: 1,
     title: 'Introducing CodexOS v1.0: Production-Ready Autonomous Agents',
-    excerpt: 'After months of development and feedback from our beta users, we're thrilled to announce the general availability of CodexOS v1.0.',
+    excerpt: 'After months of development and feedback from our beta users, we are thrilled to announce the general availability of CodexOS v1.0.',
     author: 'Sarah Chen',
     date: 'January 15, 2024',
     readTime: '8 min read',

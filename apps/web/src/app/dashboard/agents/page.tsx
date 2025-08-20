@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { CreateAgentDialog } from '@/components/dashboard/create-agent-dialog';
 import { 
   Bot, 
   Plus, 
@@ -38,6 +41,8 @@ interface Agent {
 }
 
 export default function AgentsPage() {
+  const { toast } = useToast();
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [agents, setAgents] = useState<Agent[]>([
     {
       id: '1',
@@ -93,6 +98,10 @@ export default function AgentsPage() {
     }
   ]);
 
+  const handleCreateAgent = (newAgent: Agent) => {
+    setAgents([...agents, newAgent]);
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
@@ -131,14 +140,24 @@ export default function AgentsPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline">
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              toast({
+                title: "Import Agent",
+                description: "Import functionality coming soon!",
+              });
+            }}
+          >
             <Code className="mr-2 h-4 w-4" />
             Import
           </Button>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Agent
-          </Button>
+          <Link href="/dashboard/builder">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Create Agent
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -251,27 +270,85 @@ export default function AgentsPage() {
 
             <div className="flex items-center justify-between pt-4 border-t border-border/50">
               <div className="flex items-center space-x-1">
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8"
+                  onClick={() => toast({
+                    title: "View Agent",
+                    description: `Opening details for ${agent.name}...`,
+                  })}
+                >
                   <Eye className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8"
+                  onClick={() => toast({
+                    title: "Edit Agent",
+                    description: `Opening editor for ${agent.name}...`,
+                  })}
+                >
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8"
+                  onClick={() => toast({
+                    title: "Agent Copied",
+                    description: `${agent.name} has been duplicated.`,
+                  })}
+                >
                   <Copy className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8"
+                  onClick={() => toast({
+                    title: "Delete Agent",
+                    description: `Are you sure you want to delete ${agent.name}?`,
+                    variant: "destructive",
+                  })}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
               <div className="flex items-center space-x-2">
                 {agent.status === 'active' || agent.status === 'running' ? (
-                  <Button size="sm" variant="outline">
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => {
+                      const updatedAgents = agents.map(a => 
+                        a.id === agent.id ? { ...a, status: 'inactive' as const } : a
+                      );
+                      setAgents(updatedAgents);
+                      toast({
+                        title: "Agent Paused",
+                        description: `${agent.name} has been paused successfully.`,
+                      });
+                    }}
+                  >
                     <Pause className="h-3 w-3 mr-1" />
                     Pause
                   </Button>
                 ) : (
-                  <Button size="sm">
+                  <Button 
+                    size="sm"
+                    onClick={() => {
+                      const updatedAgents = agents.map(a => 
+                        a.id === agent.id ? { ...a, status: 'active' as const } : a
+                      );
+                      setAgents(updatedAgents);
+                      toast({
+                        title: "Agent Started",
+                        description: `${agent.name} is now running.`,
+                      });
+                    }}
+                  >
                     <Play className="h-3 w-3 mr-1" />
                     Start
                   </Button>
@@ -292,6 +369,13 @@ export default function AgentsPage() {
           </div>
         ))}
       </div>
+
+      {/* Create Agent Dialog */}
+      <CreateAgentDialog 
+        open={showCreateDialog}
+        onOpenChange={setShowCreateDialog}
+        onCreateAgent={handleCreateAgent}
+      />
     </div>
   );
 }

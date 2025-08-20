@@ -49,7 +49,7 @@ const changelog = [
         'Comprehensive audit logging',
         'MFA support with TOTP',
       ],
-    ]
+    },
   },
   {
     version: 'v0.9.0',
@@ -269,7 +269,7 @@ export default function ChangelogPage() {
                             {getChangeTitle(type)}
                           </h5>
                           <ul className="space-y-2">
-                            {changes.map((change, i) => (
+                            {changes.map((change: string, i: number) => (
                               <li key={i} className="flex items-start gap-2 text-muted-foreground">
                                 <span className="text-white/30 mt-0.5">•</span>
                                 <span>{change}</span>

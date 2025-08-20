@@ -5,9 +5,10 @@ import { ArrowRight, Bot, Code2, Cpu, Sparkles, Zap, Shield, Globe, Play, Code, 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import Navigation from '@/components/layout/navigation';
-import Footer from '@/components/layout/footer';
+
 import FeatureCard from '@/components/home/feature-card';
+import AnimatedAgentBuilder from '@/components/home/animated-agent-builder';
+import { partnerLogos } from '@/components/home/partner-logos';
 
 const features = [
   {
@@ -48,20 +49,11 @@ const features = [
   },
 ];
 
-const logos = [
-  { name: 'OPENAI', description: 'AI Provider' },
-  { name: 'ANTHROPIC', description: 'Claude Integration' },
-  { name: 'GITHUB', description: 'Version Control' },
-  { name: 'DOCKER', description: 'Containerization' },
-  { name: 'VERCEL', description: 'Deployment' },
-  { name: 'SUPABASE', description: 'Database' },
-];
+
 
 export default function HomePage() {
   return (
     <>
-      <Navigation />
-      
       <main className="relative overflow-hidden">
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8 pt-44 pb-20">
@@ -151,15 +143,8 @@ export default function HomePage() {
                   <span className="text-white">Live Execution</span>
                 </div>
 
-                {/* Flow Editor Preview */}
-                <div className="relative h-[500px] lg:h-[650px] bg-gradient-to-br from-slate-900 via-purple-900/10 to-slate-900">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <Bot className="w-20 h-20 text-white/20 mx-auto mb-4" />
-                      <p className="text-white/40">AI Agent Builder</p>
-                    </div>
-                  </div>
-                </div>
+                {/* Animated AI Agent Builder */}
+                <AnimatedAgentBuilder />
 
                 {/* Bottom Stats */}
                 <div className="absolute bottom-8 left-8 right-8 grid grid-cols-2 gap-6">
@@ -194,9 +179,12 @@ export default function HomePage() {
               </p>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {logos.map((logo) => (
-                <div key={logo.name} className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/10 glass-ultra">
-                  <span className="text-lg font-semibold text-white/60 hover:text-white/80 transition-colors duration-300 tracking-tight mb-2">
+              {partnerLogos.map((logo) => (
+                <div key={logo.name} className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/10 glass-ultra hover:border-white/20 transition-all duration-300 group">
+                  <div className={`w-12 h-12 mb-4 flex items-center justify-center ${logo.color} group-hover:scale-110 transition-transform duration-300`}>
+                    <logo.logo className="w-8 h-8" />
+                  </div>
+                  <span className="text-sm font-medium text-white/60 group-hover:text-white/80 transition-colors duration-300 tracking-tight mb-2">
                     {logo.name}
                   </span>
                   <p className="text-xs text-white/40">{logo.description}</p>
@@ -298,9 +286,7 @@ export default function HomePage() {
             </motion.div>
           </div>
         </section>
-      </main>
-      
-      <Footer />
+            </main>
     </>
   );
 }

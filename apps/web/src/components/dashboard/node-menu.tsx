@@ -38,21 +38,23 @@ export default function NodeMenu() {
         {nodeTypes.map((node) => {
           const Icon = node.icon;
           return (
-            <motion.div
+            <div
               key={node.type}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               draggable
-              onDragStart={(event) => onDragStart(event, node.type)}
+              onDragStart={(event: React.DragEvent) => onDragStart(event, node.type)}
               className="cursor-move"
             >
-              <div className="flex flex-col items-center justify-center p-3 rounded-lg border border-border/50 hover:border-border hover:bg-muted/10 transition-all">
+              <motion.div 
+                className="flex flex-col items-center justify-center p-3 rounded-lg border border-border/50 hover:border-border hover:bg-muted/10 transition-all"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <div className={`p-2 rounded-lg ${node.color} mb-1`}>
                   <Icon className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-xs">{node.label}</span>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           );
         })}
       </div>

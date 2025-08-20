@@ -1,10 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Code2, Home, Bot, Database, Shield, ShoppingBag, Settings, User, LogOut, HelpCircle } from 'lucide-react';
+import { Code2, Home, Bot, Database, Shield, ShoppingBag, Settings, User, LogOut, HelpCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { useUser } from '@/contexts/user-context';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,12 +29,26 @@ const navItems = [
 
 export default function DashboardNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useUser();
+
+  const userInitials = user ? 
+    `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : 
+    'U';
+
+  const displayName = user ? 
+    `${user.firstName} ${user.lastName}` : 
+    'Guest User';
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <nav className="sticky top-0 z-40 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center px-6">
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center space-x-3 mr-8">
+        <Link href="/" className="flex items-center space-x-3 mr-8">
           <motion.div
             whileHover={{ scale: 1.05, rotate: 5 }}
             transition={{ type: 'spring', stiffness: 400 }}
@@ -43,32 +59,31 @@ export default function DashboardNav() {
           <span className="text-lg font-bold text-gradient">CodexOS</span>
         </Link>
 
-        {/* Navigation Items */}
-        <div className="flex items-center space-x-1">
+        {/* Breadcrumb or current page indicator */}
+        <div className="flex items-center text-sm text-muted-foreground">
           {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-            
-            return (
-              <Link key={item.href} href={item.href}>
-                <Button
-                  variant={isActive ? 'secondary' : 'ghost'}
-                  size="sm"
-                  className={cn(
-                    'h-9',
-                    isActive && 'bg-secondary/80'
-                  )}
-                >
-                  <Icon className="w-4 h-4 mr-2" />
-                  {item.label}
-                </Button>
-              </Link>
-            );
+            if (pathname === item.href) {
+              const Icon = item.icon;
+              return (
+                <div key={item.href} className="flex items-center space-x-2">
+                  <Icon className="w-4 h-4" />
+                  <span className="font-medium">{item.label}</span>
+                </div>
+              );
+            }
+            return null;
           })}
         </div>
 
         {/* Right Side - User Menu */}
         <div className="ml-auto flex items-center space-x-4">
+          <Link href="/">
+            <Button variant="ghost" size="sm">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Site
+            </Button>
+          </Link>
+          
           <Button variant="ghost" size="icon" className="h-9 w-9">
             <HelpCircle className="h-4 w-4" />
           </Button>
@@ -77,17 +92,17 @@ export default function DashboardNav() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src="/avatar.png" alt="User" />
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarImage src={user?.avatarUrl} alt={displayName} />
+                  <AvatarFallback>{userInitials}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">John Doe</p>
+                  <p className="text-sm font-medium leading-none">{displayName}</p>
                   <p className="text-xs leading-none text-muted-foreground">
-                    john@example.com
+                    {user?.email || 'No email'}
                   </p>
                 </div>
               </DropdownMenuLabel>
@@ -101,7 +116,7 @@ export default function DashboardNav() {
                 <span>Settings</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
+              <DropdownMenuItem className="text-destructive" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>

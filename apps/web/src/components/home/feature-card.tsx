@@ -18,11 +18,11 @@ export default function FeatureCard({ icon: Icon, title, description, gradient }
       transition={{ type: 'spring', stiffness: 300 }}
       className="relative group"
     >
-      <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" 
-           style={{
-             backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))`,
-           }}
-           className={cn("bg-gradient-to-r", gradient)}
+      <div 
+        className={cn("absolute inset-0 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500", gradient)}
+        style={{
+          backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))`,
+        }}
       />
       
       <div className="relative glass-dark rounded-xl p-6 h-full border border-white/10 group-hover:border-white/20 transition-all duration-300">

@@ -239,7 +239,12 @@ export default function DashboardPage() {
       </div>
 
       {/* Agent Builder Preview */}
-      <div className="glass-dark rounded-lg p-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="glass-dark rounded-lg p-6 col-span-full"
+      >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">Agent Builder Preview</h3>
           <Link href="/dashboard/agents">
@@ -248,10 +253,10 @@ export default function DashboardPage() {
             </Button>
           </Link>
         </div>
-        <div className="h-64 rounded-lg bg-background/50 flex items-center justify-center">
+        <div className="h-[600px] rounded-lg bg-background/50 flex items-center justify-center overflow-hidden">
           <FlowEditor />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

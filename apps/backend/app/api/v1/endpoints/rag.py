@@ -10,6 +10,18 @@ from pydantic import BaseModel
 from app.api.deps import get_current_user, get_db
 from app.models.user import User
 from app.services.rag_service import RAGService
+from app.schemas.rag import (
+    ContextBasketRequest,
+    ContextBasketResponse,
+    RAGTemplate,
+    RAGTemplateCreate,
+    RAGTemplateUpdate,
+    RAGSearchRequest,
+    RAGSearchResponse,
+    IngestRequest,
+    IngestResponse,
+    IngestProgress
+)
 
 router = APIRouter()
 
@@ -181,3 +193,161 @@ async def reindex_documents(
         "status": "reindexing_started",
         "message": "Document reindexing started in background"
     }
+
+@router.post("/context-basket", response_model=ContextBasketResponse)
+async def save_context_basket(
+    request: ContextBasketRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> ContextBasketResponse:
+    """
+    Save or use a context basket for agent execution
+    """
+    try:
+        # Validate chunks belong to user
+        chunks = await rag_service.get_chunks_by_ids(
+            request.selected_chunks,
+            current_user.id
+        )
+        
+        if len(chunks) != len(request.selected_chunks):
+            raise HTTPException(
+                status_code=404,
+                detail="One or more chunks not found"
+            )
+        
+        # Calculate total tokens
+        total_tokens = sum(len(chunk.content) // 4 for chunk in chunks)
+        
+        # Save context configuration
+        context_id = await rag_service.save_context_basket(
+            user_id=current_user.id,
+            query=request.query,
+            chunks=chunks,
+            agent_id=request.agent_id,
+            custom_prompts=request.custom_prompts
+        )
+        
+        return ContextBasketResponse(
+            success=True,
+            message="Context basket saved successfully",
+            context_id=context_id,
+            total_tokens=total_tokens
+        )
+    except Exception as e:
+        return ContextBasketResponse(
+            success=False,
+            message=f"Failed to save context basket: {str(e)}"
+        )
+
+@router.get("/templates", response_model=List[RAGTemplate])
+async def list_templates(
+    agent_id: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> List[RAGTemplate]:
+    """
+    List all RAG templates for the current user
+    """
+    templates = await rag_service.list_templates(
+        user_id=current_user.id,
+        agent_id=agent_id
+    )
+    return templates
+
+@router.post("/templates", response_model=RAGTemplate)
+async def create_template(
+    template: RAGTemplateCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> RAGTemplate:
+    """
+    Create a new RAG template
+    """
+    created_template = await rag_service.create_template(
+        user_id=current_user.id,
+        template=template
+    )
+    return created_template
+
+@router.get("/templates/{template_id}", response_model=RAGTemplate)
+async def get_template(
+    template_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> RAGTemplate:
+    """
+    Get a specific RAG template
+    """
+    template = await rag_service.get_template(
+        template_id=template_id,
+        user_id=current_user.id
+    )
+    if not template:
+        raise HTTPException(
+            status_code=404,
+            detail="Template not found"
+        )
+    return template
+
+@router.put("/templates/{template_id}", response_model=RAGTemplate)
+async def update_template(
+    template_id: str,
+    update: RAGTemplateUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> RAGTemplate:
+    """
+    Update a RAG template
+    """
+    updated_template = await rag_service.update_template(
+        template_id=template_id,
+        user_id=current_user.id,
+        update=update
+    )
+    if not updated_template:
+        raise HTTPException(
+            status_code=404,
+            detail="Template not found"
+        )
+    return updated_template
+
+@router.delete("/templates/{template_id}")
+async def delete_template(
+    template_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> Dict[str, str]:
+    """
+    Delete a RAG template
+    """
+    success = await rag_service.delete_template(
+        template_id=template_id,
+        user_id=current_user.id
+    )
+    if not success:
+        raise HTTPException(
+            status_code=404,
+            detail="Template not found"
+        )
+    return {"status": "deleted", "template_id": template_id}
+
+@router.get("/ingestion/status/{document_id}", response_model=IngestProgress)
+async def get_ingestion_status(
+    document_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> IngestProgress:
+    """
+    Get the status of a document ingestion
+    """
+    status = await rag_service.get_ingestion_status(
+        document_id=document_id,
+        user_id=current_user.id
+    )
+    if not status:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )
+    return status

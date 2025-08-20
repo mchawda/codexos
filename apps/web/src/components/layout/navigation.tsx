@@ -83,7 +83,7 @@ export default function Navigation() {
               </button>
               
               <a
-                href="https://github.com/codexos"
+                href="https://github.com/mchawda"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:bg-white/5 p-2 rounded-full transition-all duration-300 border border-white/5"

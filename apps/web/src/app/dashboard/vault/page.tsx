@@ -40,6 +40,9 @@ interface VaultItem {
 }
 
 export default function VaultPage() {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<VaultItem | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [vaultItems, setVaultItems] = useState<VaultItem[]>([
     {
       id: '1',
@@ -165,6 +168,40 @@ export default function VaultPage() {
     item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  const handleDelete = (id: string) => {
+    if (confirm('Are you sure you want to delete this credential?')) {
+      setVaultItems(vaultItems.filter(item => item.id !== id));
+    }
+  };
+
+  const handleCopy = (id: string) => {
+    // In a real app, you would copy the actual credential value
+    navigator.clipboard.writeText('sk-proj-abc123xyz789...');
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleDownload = (item: VaultItem) => {
+    // Create a JSON file with the credential data
+    const dataStr = JSON.stringify({
+      name: item.name,
+      type: item.type,
+      category: item.category,
+      environment: item.environment,
+      value: 'sk-proj-abc123xyz789...' // In real app, use actual value
+    }, null, 2);
+    
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${item.name.replace(/\s+/g, '-').toLowerCase()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -175,11 +212,26 @@ export default function VaultPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={() => {
+              // Create a file input element
+              const input = document.createElement('input');
+              input.type = 'file';
+              input.accept = '.json,.csv';
+              input.onchange = (e) => {
+                const file = (e.target as HTMLInputElement).files?.[0];
+                if (file) {
+                  alert(`Importing credentials from ${file.name}...\n\nIn a real app, this would parse and import your credentials.`);
+                }
+              };
+              input.click();
+            }}
+          >
             <Upload className="mr-2 h-4 w-4" />
             Import
           </Button>
-          <Button>
+          <Button onClick={() => setShowAddModal(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Credential
           </Button>
@@ -205,7 +257,13 @@ export default function VaultPage() {
               <p className="text-sm font-medium">Last Audit</p>
               <p className="text-xs text-muted-foreground">2 hours ago</p>
             </div>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                alert('Security audit started! This would check for:\n\n• Expired credentials\n• Weak passwords\n• Unused credentials\n• Access anomalies\n• Compliance violations');
+              }}
+            >
               <RefreshCw className="h-4 w-4 mr-2" />
               Run Audit
             </Button>
@@ -329,8 +387,17 @@ export default function VaultPage() {
                         <Eye className="h-3 w-3" />
                       )}
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7">
-                      <Copy className="h-3 w-3" />
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7"
+                      onClick={() => handleCopy(item.id)}
+                    >
+                      {copiedId === item.id ? (
+                        <CheckCircle className="h-3 w-3 text-green-500" />
+                      ) : (
+                        <Copy className="h-3 w-3" />
+                      )}
                     </Button>
                   </div>
 
@@ -355,13 +422,26 @@ export default function VaultPage() {
               </div>
               
               <div className="flex items-center space-x-1">
-                <Button variant="ghost" size="icon">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => setEditingItem(item)}
+                >
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => handleDownload(item)}
+                >
                   <Download className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => handleDelete(item.id)}
+                  className="hover:text-destructive"
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
@@ -369,6 +449,167 @@ export default function VaultPage() {
           </div>
         ))}
       </div>
+
+      {/* Add Credential Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-background glass-dark rounded-lg p-6 w-full max-w-lg space-y-4">
+            <h3 className="text-xl font-semibold">Add New Credential</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Name</label>
+                <input
+                  type="text"
+                  className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  placeholder="e.g., Production API Key"
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Type</label>
+                <select className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500">
+                  <option value="api_key">API Key</option>
+                  <option value="password">Password</option>
+                  <option value="token">Token</option>
+                  <option value="certificate">Certificate</option>
+                  <option value="ssh_key">SSH Key</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Value</label>
+                <textarea
+                  className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500 font-mono text-sm"
+                  rows={3}
+                  placeholder="Enter credential value..."
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Category</label>
+                <input
+                  type="text"
+                  className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  placeholder="e.g., LLM Provider"
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Environment</label>
+                <select className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500">
+                  <option value="development">Development</option>
+                  <option value="staging">Staging</option>
+                  <option value="production">Production</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Tags (comma separated)</label>
+                <input
+                  type="text"
+                  className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  placeholder="e.g., api, production, critical"
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button variant="outline" onClick={() => setShowAddModal(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => {
+                  // In a real app, you would save the credential here
+                  const newItem: VaultItem = {
+                    id: Date.now().toString(),
+                    name: 'New Credential',
+                    type: 'api_key',
+                    category: 'New Category',
+                    lastUsed: 'Never',
+                    lastModified: 'Just now',
+                    environment: 'development',
+                    accessCount: 0,
+                    tags: ['new'],
+                    status: 'active'
+                  };
+                  setVaultItems([...vaultItems, newItem]);
+                  setShowAddModal(false);
+                }}
+              >
+                Add Credential
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Credential Modal */}
+      {editingItem && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-background glass-dark rounded-lg p-6 w-full max-w-lg space-y-4">
+            <h3 className="text-xl font-semibold">Edit Credential</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Name</label>
+                <input
+                  type="text"
+                  className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  defaultValue={editingItem.name}
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Category</label>
+                <input
+                  type="text"
+                  className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  defaultValue={editingItem.category}
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Environment</label>
+                <select 
+                  className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  defaultValue={editingItem.environment}
+                >
+                  <option value="development">Development</option>
+                  <option value="staging">Staging</option>
+                  <option value="production">Production</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Status</label>
+                <select 
+                  className="w-full mt-1 px-3 py-2 bg-background/50 border border-border rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  defaultValue={editingItem.status}
+                >
+                  <option value="active">Active</option>
+                  <option value="expiring">Expiring Soon</option>
+                  <option value="expired">Expired</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button variant="outline" onClick={() => setEditingItem(null)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => {
+                  // In a real app, you would update the credential here
+                  setEditingItem(null);
+                }}
+              >
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

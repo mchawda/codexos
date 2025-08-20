@@ -1,0 +1,91 @@
+/* Hide ReactFlow attribution */
+.react-flow__attribution {
+  display: none !important;
+}
+
+/* Enhanced MiniMap styling */
+.react-flow__minimap {
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+}
+
+.react-flow__minimap-mask {
+  fill: rgb(15, 23, 42, 0.6) !important;
+}
+
+.react-flow__minimap-node {
+  stroke-width: 2px !important;
+  stroke: #fff !important;
+  rx: 4 !important;
+  ry: 4 !important;
+}
+
+/* Improve controls appearance */
+.react-flow__controls {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+.react-flow__controls-button {
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  color: hsl(var(--foreground)) !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.react-flow__controls-button:hover {
+  background-color: hsl(var(--muted)) !important;
+  border-color: hsl(var(--foreground) / 0.2) !important;
+}
+
+.react-flow__controls-button svg {
+  fill: hsl(var(--foreground)) !important;
+  stroke: hsl(var(--foreground)) !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Ensure zoom icons are visible */
+.react-flow__controls-button-zoom-in svg path,
+.react-flow__controls-button-zoom-out svg path,
+.react-flow__controls-button-fit-view svg path,
+.react-flow__controls-button-interactive svg path {
+  fill: hsl(var(--foreground)) !important;
+  stroke: hsl(var(--foreground)) !important;
+}
+
+/* Dark mode specific fixes */
+.dark .react-flow__controls-button {
+  background-color: hsl(var(--background)) !important;
+  color: white !important;
+}
+
+.dark .react-flow__controls-button svg,
+.dark .react-flow__controls-button svg path {
+  fill: white !important;
+  stroke: white !important;
+}
+
+/* Better selection box */
+.react-flow__selection {
+  background: rgba(59, 130, 246, 0.08) !important;
+  border: 1px solid rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Node selection highlight */
+.react-flow__node.selected {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Edge selection highlight */
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #3b82f6 !important;
+  stroke-width: 3 !important;
+}
