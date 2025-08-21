@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 /**
  * Embedding service for generating vector embeddings
  */

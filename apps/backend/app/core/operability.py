@@ -1,5 +1,6 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
-CodexOS Operability Layer - Production-ready observability and reliability
+Operability and reliability features for CodexOS
 """
 
 import asyncio

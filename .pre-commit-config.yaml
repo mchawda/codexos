@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 repos:
   # Python formatting and linting
   - repo: https://github.com/psf/black

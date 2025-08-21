@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 #!/bin/bash
 
 # CodexOS Production Deployment Script

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """Add agent execution history and detailed logging
 
 Revision ID: 002

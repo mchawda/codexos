@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/theme-provider';

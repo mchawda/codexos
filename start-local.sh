@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 #!/bin/bash
 
 # Simple startup script for local development

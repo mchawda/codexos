@@ -1,5 +1,5 @@
-'use client';
-
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
+import type { Metadata } from 'next';
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
 Enterprise-grade encryption service for CodexOS
 AES-256-GCM with key derivation and rotation support

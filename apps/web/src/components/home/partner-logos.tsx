@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 import React from 'react';
 
 interface LogoProps {

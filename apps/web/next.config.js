@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,

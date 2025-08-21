@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({

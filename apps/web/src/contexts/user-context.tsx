@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';

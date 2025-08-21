@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 #!/bin/bash
 
 # Script to copy a prompt file to clipboard

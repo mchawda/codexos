@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: LicenseRef-NIA-Proprietary
-"""Database session management"""
+"""
+Database session management for CodexOS
+"""
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker

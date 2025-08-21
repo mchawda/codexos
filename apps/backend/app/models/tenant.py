@@ -1,6 +1,6 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
-Multi-tenancy models for CodexOS
-Adapted from authandrbac for enterprise-grade isolation
+Tenant management models for CodexOS
 """
 
 from uuid import uuid4

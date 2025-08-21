@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 #!/usr/bin/env python3
 """
 CodexOS CLI - Command-line interface for task execution and management

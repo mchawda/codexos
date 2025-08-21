@@ -1,5 +1,6 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
-Health check system for monitoring service availability
+Health check endpoints and monitoring for CodexOS
 """
 
 import asyncio

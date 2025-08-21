@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 #!/usr/bin/env python3
 """Test script for agent execution history and logs endpoints"""
 

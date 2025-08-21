@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: LicenseRef-NIA-Proprietary
-"""User model for authentication and authorization"""
+"""
+User management models for CodexOS
+"""
 
 from enum import Enum
 from uuid import UUID, uuid4

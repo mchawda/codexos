@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 'use client';
 
 import { memo, ReactNode } from 'react';

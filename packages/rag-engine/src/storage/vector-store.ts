@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 /**
  * Vector store abstraction for different providers
  */

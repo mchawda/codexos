@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 const nextJest = require('next/jest')
 
 const createJestConfig = nextJest({

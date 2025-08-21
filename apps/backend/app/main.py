@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: LicenseRef-NIA-Proprietary
-"""Main FastAPI application for CodexOS Backend"""
+"""
+CodexOS Backend API - Main application entry point
+"""
 
 from contextlib import asynccontextmanager
 

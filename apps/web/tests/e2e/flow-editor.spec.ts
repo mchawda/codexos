@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 import { test, expect } from '@playwright/test'
 
 test.describe('Flow Editor', () => {

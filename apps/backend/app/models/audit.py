@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
 Audit logging models for compliance and security
 SOC2 Type II and ISO 27001 compliant audit trail

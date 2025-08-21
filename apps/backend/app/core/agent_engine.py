@@ -1,5 +1,6 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
-CodexOS Agent Engine with Planner/Executor separation and rollback capabilities
+Agent engine core functionality for CodexOS
 """
 
 import asyncio

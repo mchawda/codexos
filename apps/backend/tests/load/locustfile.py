@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
 Load testing configuration for CodexOS API
 """

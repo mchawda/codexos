@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
 Marketplace models for sharing and monetizing AI agent templates
 """

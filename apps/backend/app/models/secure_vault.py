@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
 Secure Vault models for encrypted credential storage
 AES-256-GCM encryption with key derivation

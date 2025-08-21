@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 import type { Config } from 'tailwindcss';
 
 const config: Config = {

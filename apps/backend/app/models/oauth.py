@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
 OAuth2/OIDC models for Auth0 and SSO integration
 """

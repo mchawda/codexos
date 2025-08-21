@@ -1,13 +1,13 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
-Role-Based Access Control models for CodexOS
-Enterprise-grade RBAC with fine-grained permissions
+Role-based access control models for CodexOS
 """
 
 from uuid import uuid4
 from enum import Enum
 from datetime import datetime
 
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text, JSON, Index, UniqueConstraint
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text, JSON, Index, UniqueConstraint, Integer
 from sqlalchemy.dialects.postgresql import UUID as PGUUID, JSONB
 from sqlalchemy.orm import relationship
 

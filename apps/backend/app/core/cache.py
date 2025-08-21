@@ -1,5 +1,6 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
-Caching layer for performance optimization
+Caching service for CodexOS
 """
 
 import json

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 /**
  * CodexOS RAG Engine
  * Retrieval Augmented Generation for intelligent context-aware AI agents

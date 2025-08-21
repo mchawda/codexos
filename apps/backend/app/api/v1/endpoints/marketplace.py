@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
 Marketplace API endpoints for discovering and purchasing AI agent templates
 """

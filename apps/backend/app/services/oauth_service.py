@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
 OAuth2/OIDC authentication service
 Supports Auth0, Okta, Azure AD, and generic OIDC providers

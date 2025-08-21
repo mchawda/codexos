@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
 Enhanced authentication with multi-tenancy and RBAC
 Supports Auth0 and other OAuth providers

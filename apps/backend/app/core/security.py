@@ -1,5 +1,6 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
-CodexOS Security Guardrails and Agent Engine Protection
+Security utilities and guardrails for CodexOS
 """
 
 import os

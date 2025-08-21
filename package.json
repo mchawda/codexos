@@ -2,6 +2,7 @@
   "name": "codexos",
   "version": "1.0.0",
   "private": true,
+  "license": "LicenseRef-NIA-Proprietary",
   "description": "A next-level autonomous engineering OS. Modular, agentic, real-time, and scalable.",
   "scripts": {
     "start": "node start.js",

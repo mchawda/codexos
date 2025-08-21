@@ -1,5 +1,6 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
-Monitoring and observability setup for production
+Monitoring and observability for CodexOS
 """
 
 import time

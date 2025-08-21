@@ -1,5 +1,6 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """
-CodexOS OpenAPI Schema and Error Handling
+OpenAPI configuration and customization for CodexOS
 """
 
 from typing import Dict, Any, Optional, List

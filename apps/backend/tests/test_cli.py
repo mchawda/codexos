@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 """Tests for the CodexOS CLI"""
 
 import pytest

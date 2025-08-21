@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: LicenseRef-NIA-Proprietary
-"""Database base classes and mixins"""
+"""
+Database base models and configuration for CodexOS
+"""
 
 from datetime import datetime
 from typing import Any

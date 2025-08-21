@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 groups:
   - name: codexos_alerts
     interval: 30s
