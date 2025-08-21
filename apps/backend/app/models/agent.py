@@ -3,6 +3,7 @@
 
 from enum import Enum
 from uuid import uuid4
+from datetime import datetime
 
 from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
@@ -93,6 +94,44 @@ class Execution(Base, TimestampMixin):
     tokens_used = Column(Integer, default=0, nullable=False)
     cost_cents = Column(Integer, default=0, nullable=False)
     
+    # TTL for cleanup
+    ttl_days = Column(Integer, default=30, nullable=True)
+    
     # Relationships
     flow = relationship("AgentFlow", back_populates="executions")
     user = relationship("User", back_populates="executions")
+    execution_nodes = relationship("ExecutionNode", back_populates="execution", cascade="all, delete-orphan")
+
+
+class ExecutionNode(Base, TimestampMixin):
+    """Detailed node-level execution tracking"""
+
+    __tablename__ = "execution_nodes"
+
+    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    execution_id = Column(PGUUID(as_uuid=True), ForeignKey("executions.id", ondelete="CASCADE"), nullable=False)
+    
+    # Node identification
+    node_id = Column(String(255), nullable=False)
+    node_type = Column(String(100), nullable=False)
+    
+    # Input/Output data
+    input_data = Column(JSON, nullable=True)
+    output_data = Column(JSON, nullable=True)
+    
+    # Timing
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    duration_ms = Column(Integer, nullable=True)
+    
+    # Status
+    status = Column(String(50), nullable=False, default="pending")  # pending, running, completed, failed
+    
+    # Error handling
+    error_message = Column(Text, nullable=True)
+    
+    # Additional metadata
+    metadata = Column(JSON, nullable=True)  # Tool names, model info, etc.
+    
+    # Relationships
+    execution = relationship("Execution", back_populates="execution_nodes")

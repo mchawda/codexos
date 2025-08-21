@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { CreateAgentDialog } from '@/components/dashboard/create-agent-dialog';
+import { AgentToolbar } from '@/components/dashboard/agent-toolbar';
+import { AgentCard } from '@/components/dashboard/agent-card';
+import { AgentGraphView } from '@/components/dashboard/agent-graph-view';
+import { useAgentStore } from '@/lib/stores/agent-store';
 import { 
   Bot, 
   Plus, 
@@ -26,109 +30,219 @@ import {
   Cpu
 } from 'lucide-react';
 
-interface Agent {
-  id: string;
-  name: string;
-  description: string;
-  type: 'autonomous' | 'assisted' | 'scheduled';
-  status: 'active' | 'inactive' | 'error' | 'running';
-  lastRun: string;
-  successRate: number;
-  executionCount: number;
-  avgExecutionTime: string;
-  nodes: number;
-  version: string;
-}
-
 export default function AgentsPage() {
   const { toast } = useToast();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [agents, setAgents] = useState<Agent[]>([
-    {
-      id: '1',
-      name: 'Code Review Assistant',
-      description: 'Automatically reviews pull requests and provides feedback',
-      type: 'autonomous',
-      status: 'active',
-      lastRun: '2 minutes ago',
-      successRate: 98.5,
-      executionCount: 1247,
-      avgExecutionTime: '45s',
-      nodes: 12,
-      version: 'v2.1.0'
-    },
-    {
-      id: '2',
-      name: 'Documentation Generator',
-      description: 'Generates and updates API documentation from code',
-      type: 'scheduled',
-      status: 'running',
-      lastRun: 'Running now',
-      successRate: 100,
-      executionCount: 89,
-      avgExecutionTime: '2m 15s',
-      nodes: 8,
-      version: 'v1.3.2'
-    },
-    {
-      id: '3',
-      name: 'Bug Triager',
-      description: 'Analyzes and categorizes incoming bug reports',
-      type: 'autonomous',
-      status: 'inactive',
-      lastRun: '1 hour ago',
-      successRate: 92.3,
-      executionCount: 456,
-      avgExecutionTime: '30s',
-      nodes: 15,
-      version: 'v1.0.0'
-    },
-    {
-      id: '4',
-      name: 'Dependency Updater',
-      description: 'Monitors and updates project dependencies safely',
-      type: 'scheduled',
-      status: 'error',
-      lastRun: '3 hours ago',
-      successRate: 87.5,
-      executionCount: 234,
-      avgExecutionTime: '5m 30s',
-      nodes: 20,
-      version: 'v1.5.1'
-    }
-  ]);
+  
+  const { 
+    agents, 
+    setAgents, 
+    selectedAgent, 
+    selectAgent, 
+    showGraphView, 
+    filteredAgents 
+  } = useAgentStore();
 
-  const handleCreateAgent = (newAgent: Agent) => {
-    setAgents([...agents, newAgent]);
+  // Initialize with mock data
+  useEffect(() => {
+    const mockAgents = [
+      {
+        id: '1',
+        name: 'Code Review Assistant',
+        description: 'Automatically reviews pull requests and provides feedback',
+        type: 'autonomous' as const,
+        agentType: 'LLM' as const,
+        status: 'active' as 'active' | 'inactive' | 'error' | 'running',
+        lastRun: '2 minutes ago',
+        successRate: 98.5,
+        executionCount: 1247,
+        avgExecutionTime: '45s',
+        nodes: 12,
+        version: 'v2.1.0',
+        linkedAgents: [
+          {
+            id: '2',
+            name: 'Documentation Generator',
+            type: 'scheduled',
+            relationship: 'triggers' as const,
+          },
+          {
+            id: '3',
+            name: 'Bug Triager',
+            type: 'autonomous',
+            relationship: 'depends_on' as const,
+          }
+        ],
+        versions: [
+          {
+            id: 'v1',
+            version: 'v2.1.0',
+            createdAt: '2024-01-15',
+            description: 'Latest stable version with improved code analysis',
+            flowData: {},
+            isCurrent: true,
+          },
+          {
+            id: 'v2',
+            version: 'v2.0.5',
+            createdAt: '2024-01-10',
+            description: 'Previous version with basic functionality',
+            flowData: {},
+            isCurrent: false,
+          }
+        ]
+      },
+      {
+        id: '2',
+        name: 'Documentation Generator',
+        description: 'Generates and updates API documentation from code',
+        type: 'scheduled' as const,
+        agentType: 'Tool' as const,
+        status: 'running' as 'active' | 'inactive' | 'error' | 'running',
+        lastRun: 'Running now',
+        successRate: 100,
+        executionCount: 89,
+        avgExecutionTime: '2m 15s',
+        nodes: 8,
+        version: 'v1.3.2',
+        linkedAgents: [
+          {
+            id: '1',
+            name: 'Code Review Assistant',
+            type: 'autonomous',
+            relationship: 'triggered_by' as const,
+          }
+        ],
+        versions: [
+          {
+            id: 'v1',
+            version: 'v1.3.2',
+            createdAt: '2024-01-12',
+            description: 'Current version with enhanced doc generation',
+            flowData: {},
+            isCurrent: true,
+          }
+        ]
+      },
+      {
+        id: '3',
+        name: 'Bug Triager',
+        description: 'Analyzes and categorizes incoming bug reports',
+        type: 'autonomous' as const,
+        agentType: 'RAG' as const,
+        status: 'inactive' as 'active' | 'inactive' | 'error' | 'running',
+        lastRun: '1 hour ago',
+        successRate: 92.3,
+        executionCount: 456,
+        avgExecutionTime: '30s',
+        nodes: 15,
+        version: 'v1.0.0',
+        linkedAgents: [
+          {
+            id: '1',
+            name: 'Code Review Assistant',
+            type: 'autonomous',
+            relationship: 'triggers' as const,
+          }
+        ],
+        versions: [
+          {
+            id: 'v1',
+            version: 'v1.0.0',
+            createdAt: '2024-01-01',
+            description: 'Initial release version',
+            flowData: {},
+            isCurrent: true,
+          }
+        ]
+      },
+      {
+        id: '4',
+        name: 'Dependency Updater',
+        description: 'Monitors and updates project dependencies safely',
+        type: 'scheduled' as const,
+        agentType: 'Trigger Agent' as const,
+        status: 'error' as 'active' | 'inactive' | 'error' | 'running',
+        lastRun: '3 hours ago',
+        successRate: 87.5,
+        executionCount: 234,
+        avgExecutionTime: '5m 30s',
+        nodes: 20,
+        version: 'v1.5.1',
+        linkedAgents: [],
+        versions: [
+          {
+            id: 'v1',
+            version: 'v1.5.1',
+            createdAt: '2024-01-08',
+            description: 'Latest version with security patches',
+            flowData: {},
+            isCurrent: true,
+          }
+        ]
+      }
+    ];
+
+    setAgents(mockAgents as any);
+  }, [setAgents]);
+
+  const handleCreateAgent = (newAgent: any) => {
+    // This would be handled by the store in a real implementation
+    toast({
+      title: "Agent Created",
+      description: `${newAgent.name} has been created successfully.`,
+    });
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'running':
-        return <div className="w-4 h-4 rounded-full bg-blue-500 animate-pulse" />;
-      case 'inactive':
-        return <AlertCircle className="w-4 h-4 text-yellow-500" />;
-      case 'error':
-        return <XCircle className="w-4 h-4 text-red-500" />;
-      default:
-        return null;
-    }
+  const handleEditAgent = (agent: any) => {
+    toast({
+      title: "Edit Agent",
+      description: `Opening editor for ${agent.name}...`,
+    });
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'autonomous':
-        return 'bg-violet-500/10 text-violet-500 border-violet-500/20';
-      case 'assisted':
-        return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      case 'scheduled':
-        return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
-      default:
-        return '';
-    }
+  const handleDeleteAgent = (agent: any) => {
+    toast({
+      title: "Delete Agent",
+      description: `Are you sure you want to delete ${agent.name}?`,
+      variant: "destructive",
+    });
   };
+
+  const handleDuplicateAgent = (agent: any) => {
+    toast({
+      title: "Agent Copied",
+      description: `${agent.name} has been duplicated.`,
+    });
+  };
+
+  const handleToggleStatus = (agent: any) => {
+    const updatedAgents = agents.map(a => 
+      a.id === agent.id 
+        ? { 
+            ...a, 
+            status: a.status === 'active' || a.status === 'running' ? 'inactive' : 'active' 
+          } 
+        : a
+    );
+    setAgents(updatedAgents);
+    
+    const action = agent.status === 'active' || agent.status === 'running' ? 'paused' : 'started';
+    toast({
+      title: `Agent ${action}`,
+      description: `${agent.name} has been ${action} successfully.`,
+    });
+  };
+
+  const handleVersionChange = (agent: any, version: any) => {
+    // In a real implementation, this would load the flow from the version
+    toast({
+      title: "Version Loaded",
+      description: `Loaded ${version.version} for ${agent.name}`,
+    });
+  };
+
+  const filteredAgentsList = filteredAgents();
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -215,160 +329,40 @@ export default function AgentsPage() {
         </div>
       </div>
 
-      {/* Agents Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {agents.map((agent) => (
-          <div
-            key={agent.id}
-            className="glass-dark rounded-xl p-6 hover:bg-accent/5 transition-all duration-300"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-gradient-to-r from-violet-500/10 to-purple-500/10">
-                  <Bot className="h-5 w-5 text-violet-500" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">{agent.name}</h3>
-                  <div className="flex items-center space-x-2 mt-1">
-                    {getStatusIcon(agent.status)}
-                    <span className="text-xs text-muted-foreground capitalize">
-                      {agent.status}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <Badge 
-                variant="outline" 
-                className={`text-xs ${getTypeColor(agent.type)}`}
-              >
-                {agent.type}
-              </Badge>
-            </div>
+      {/* Toolbar with Filters */}
+      <AgentToolbar />
 
-            <p className="text-sm text-muted-foreground mb-4">
-              {agent.description}
-            </p>
+      {/* Content Area */}
+      {showGraphView ? (
+        <AgentGraphView />
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {filteredAgentsList.map((agent) => (
+            <AgentCard
+              key={agent.id}
+              agent={agent}
+              isSelected={selectedAgent?.id === agent.id}
+              onSelect={selectAgent}
+              onEdit={handleEditAgent}
+              onDelete={handleDeleteAgent}
+              onDuplicate={handleDuplicateAgent}
+              onToggleStatus={handleToggleStatus}
+              onVersionChange={handleVersionChange}
+            />
+          ))}
+        </div>
+      )}
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="text-center p-2 rounded-lg bg-background/50">
-                <p className="text-xs text-muted-foreground">Success Rate</p>
-                <p className="text-sm font-semibold">{agent.successRate}%</p>
-              </div>
-              <div className="text-center p-2 rounded-lg bg-background/50">
-                <p className="text-xs text-muted-foreground">Executions</p>
-                <p className="text-sm font-semibold">{agent.executionCount}</p>
-              </div>
-              <div className="text-center p-2 rounded-lg bg-background/50">
-                <p className="text-xs text-muted-foreground">Avg Time</p>
-                <p className="text-sm font-semibold">{agent.avgExecutionTime}</p>
-              </div>
-              <div className="text-center p-2 rounded-lg bg-background/50">
-                <p className="text-xs text-muted-foreground">Nodes</p>
-                <p className="text-sm font-semibold">{agent.nodes}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-border/50">
-              <div className="flex items-center space-x-1">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8"
-                  onClick={() => toast({
-                    title: "View Agent",
-                    description: `Opening details for ${agent.name}...`,
-                  })}
-                >
-                  <Eye className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8"
-                  onClick={() => toast({
-                    title: "Edit Agent",
-                    description: `Opening editor for ${agent.name}...`,
-                  })}
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8"
-                  onClick={() => toast({
-                    title: "Agent Copied",
-                    description: `${agent.name} has been duplicated.`,
-                  })}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8"
-                  onClick={() => toast({
-                    title: "Delete Agent",
-                    description: `Are you sure you want to delete ${agent.name}?`,
-                    variant: "destructive",
-                  })}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="flex items-center space-x-2">
-                {agent.status === 'active' || agent.status === 'running' ? (
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    onClick={() => {
-                      const updatedAgents = agents.map(a => 
-                        a.id === agent.id ? { ...a, status: 'inactive' as const } : a
-                      );
-                      setAgents(updatedAgents);
-                      toast({
-                        title: "Agent Paused",
-                        description: `${agent.name} has been paused successfully.`,
-                      });
-                    }}
-                  >
-                    <Pause className="h-3 w-3 mr-1" />
-                    Pause
-                  </Button>
-                ) : (
-                  <Button 
-                    size="sm"
-                    onClick={() => {
-                      const updatedAgents = agents.map(a => 
-                        a.id === agent.id ? { ...a, status: 'active' as const } : a
-                      );
-                      setAgents(updatedAgents);
-                      toast({
-                        title: "Agent Started",
-                        description: `${agent.name} is now running.`,
-                      });
-                    }}
-                  >
-                    <Play className="h-3 w-3 mr-1" />
-                    Start
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
-              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                <Clock className="h-3 w-3" />
-                <span>{agent.lastRun}</span>
-              </div>
-              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                <GitBranch className="h-3 w-3" />
-                <span>{agent.version}</span>
-              </div>
-            </div>
+      {/* Empty State */}
+      {filteredAgentsList.length === 0 && (
+        <div className="flex items-center justify-center h-96 text-muted-foreground">
+          <div className="text-center">
+            <Bot className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p className="text-lg font-medium mb-2">No agents found</p>
+            <p className="text-sm">Try adjusting your filters or create a new agent</p>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       {/* Create Agent Dialog */}
       <CreateAgentDialog 

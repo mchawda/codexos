@@ -330,8 +330,17 @@ class AgentExecutor:
     async def _execute_tool_step(self, step: ExecutionStep, context: ExecutionContext, 
                                 execution_context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute tool step with security validation"""
+        # Extract tool information from step data
         tool_name = step.input_data.get("tool", "")
         action = step.input_data.get("action", "")
+        
+        # Handle trigger_agent tool
+        if tool_name == "trigger_agent":
+            return await self._execute_trigger_agent(step, context, execution_context)
+        
+        # For other tools, check if we have the required fields
+        if not tool_name:
+            raise ValueError("Tool name is required")
         
         # Validate tool access
         if not self.security_guard.validate_tool_access(tool_name, action, context):
@@ -368,6 +377,71 @@ class AgentExecutor:
         condition = step.input_data.get("condition", "true")
         # Simple condition evaluation - in real implementation, use safe eval
         return {"condition_result": condition == "true"}
+    
+    async def _execute_trigger_agent(self, step: ExecutionStep, context: ExecutionContext, 
+                                    execution_context: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute trigger_agent tool to chain with another agent"""
+        import httpx
+        
+        agent_id = step.input_data.get("agent_id")
+        input_data = step.input_data.get("input", {})
+        context_data = step.input_data.get("context", [])
+        mode = step.input_data.get("mode", "autonomous")
+        
+        if not agent_id:
+            raise ValueError("agent_id is required for trigger_agent tool")
+        
+        # Get the current user's API base URL from context
+        api_base = context.get("api_base", "http://localhost:8000")
+        
+        try:
+            # Make internal POST request to /agent/run
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{api_base}/api/v1/agents/run",
+                    json={
+                        "agent_id": agent_id,
+                        "input": input_data,
+                        "context": context_data,
+                        "mode": mode
+                    },
+                    headers={
+                        "Authorization": f"Bearer {context.get('access_token')}",
+                        "Content-Type": "application/json"
+                    },
+                    timeout=300.0  # 5 minute timeout for agent execution
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    return {
+                        "tool": "trigger_agent",
+                        "agent_id": agent_id,
+                        "status": "success",
+                        "output": result.get("output", {}),
+                        "execution_id": result.get("execution_id"),
+                        "tokens_used": result.get("tokens_used", 0),
+                        "cost_cents": result.get("cost_cents", 0)
+                    }
+                else:
+                    error_msg = f"Failed to trigger agent {agent_id}: {response.status_code} - {response.text}"
+                    logger.error(error_msg)
+                    return {
+                        "tool": "trigger_agent",
+                        "agent_id": agent_id,
+                        "status": "error",
+                        "error": error_msg
+                    }
+                    
+        except Exception as e:
+            error_msg = f"Error triggering agent {agent_id}: {str(e)}"
+            logger.error(error_msg)
+            return {
+                "tool": "trigger_agent",
+                "agent_id": agent_id,
+                "status": "error",
+                "error": error_msg
+            }
     
     async def _check_dependencies(self, step: ExecutionStep, dependencies: Dict[str, List[str]], 
                                 completed_steps: int) -> bool:

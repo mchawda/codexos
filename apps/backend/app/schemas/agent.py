@@ -102,3 +102,45 @@ class ExecutionResponse(BaseModel):
     cost_cents: int = 0
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
+
+
+# New schemas for execution history and logs
+class ExecutionHistoryItem(BaseModel):
+    """Schema for execution history list item"""
+    
+    model_config = ConfigDict(from_attributes=True)
+    
+    run_id: UUID = Field(alias="id")
+    status: str
+    started_at: Optional[datetime]
+    duration: Optional[str] = None  # Calculated field
+    input: Optional[str] = None  # Summary of input
+    output: Optional[str] = None  # Summary of output
+    node_count: Optional[int] = None
+    tokens_used: int = 0
+    cost_cents: int = 0
+
+
+class ExecutionNodeDetail(BaseModel):
+    """Schema for detailed node execution information"""
+    
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: str = Field(alias="node_id")
+    type: str = Field(alias="node_type")
+    input: Optional[Dict[str, Any]] = Field(alias="input_data")
+    output: Optional[Dict[str, Any]] = Field(alias="output_data")
+    time: Optional[str] = None  # Calculated duration
+    status: str
+    error_message: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
+
+
+class ExecutionLogsResponse(BaseModel):
+    """Schema for detailed execution logs"""
+    
+    run_id: UUID
+    nodes: List[ExecutionNodeDetail]
+    errors: List[str] = []
+    final_output: Optional[Dict[str, Any]] = None
+    summary: Dict[str, Any] = {}

@@ -1,0 +1,75 @@
+{
+  "name": "Sub-Agent Chaining Example",
+  "description": "Example flow demonstrating how to trigger another agent",
+  "nodes": [
+    {
+      "id": "entry",
+      "type": "entry",
+      "position": { "x": 100, "y": 100 },
+      "data": { "label": "Entry" }
+    },
+    {
+      "id": "planner",
+      "type": "llm",
+      "position": { "x": 100, "y": 250 },
+      "data": { 
+        "label": "LLM",
+        "model": "gpt-4",
+        "prompt": "Analyze the user input and determine the intent"
+      }
+    },
+    {
+      "id": "trigger_sub",
+      "type": "triggerAgent",
+      "position": { "x": 100, "y": 400 },
+      "data": {
+        "label": "Trigger Bug Triager",
+        "agentId": "bug-triager",
+        "inputData": "Process error logs",
+        "contextData": "User reported a critical error",
+        "mode": "autonomous"
+      }
+    },
+    {
+      "id": "end",
+      "type": "exit",
+      "position": { "x": 100, "y": 550 },
+      "data": { "label": "Exit" }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-2",
+      "source": "entry",
+      "target": "planner",
+      "animated": true,
+      "style": { "stroke": "#60a5fa" },
+      "markerEnd": {
+        "type": "arrowClosed",
+        "color": "#60a5fa"
+      }
+    },
+    {
+      "id": "e2-3",
+      "source": "planner",
+      "target": "trigger_sub",
+      "animated": true,
+      "style": { "stroke": "#60a5fa" },
+      "markerEnd": {
+        "type": "arrowClosed",
+        "color": "#60a5fa"
+      }
+    },
+    {
+      "id": "e3-4",
+      "source": "trigger_sub",
+      "target": "end",
+      "animated": true,
+      "style": { "stroke": "#60a5fa" },
+      "markerEnd": {
+        "type": "arrowClosed",
+        "color": "#60a5fa"
+      }
+    }
+  ]
+}

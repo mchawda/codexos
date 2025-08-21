@@ -172,6 +172,13 @@ const flowControlNodes = [
     icon: Moon,
     color: 'bg-blue-700',
     description: 'Delay execution'
+  },
+  {
+    type: 'triggerAgent',
+    label: 'Trigger Agent',
+    icon: Bot,
+    color: 'bg-purple-600',
+    description: 'Execute another agent'
   }
 ];
 

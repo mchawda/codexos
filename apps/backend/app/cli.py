@@ -13,11 +13,14 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
+from datetime import datetime, timedelta
 
 from app.core.config import settings
 from app.core.security import security_guardrails, execution_sandbox
 from app.services.agent_service import AgentService
 from app.services.rag_service import RAGService
+from app.db.session import get_db
+from app.services.execution_history_service import ExecutionHistoryService
 
 console = Console()
 
@@ -69,7 +72,7 @@ def run(task: str, tools: Optional[str], plan_only: bool, verbose: bool, config:
         else:
             execute_task(task, allowed_tools, config_data, verbose)
     except Exception as e:
-        console.print(f"[red]Error executing task:[/red] {e}")
+        console.print(f"[red]Error executing task:[/bold red] {e}")
         if verbose:
             console.print_exception()
         sys.exit(1)
@@ -252,6 +255,135 @@ def logs(level: str, lines: int):
         )
     
     console.print(log_table)
+
+# Execution History Management Commands
+@cli.group()
+def executions():
+    """Manage agent executions and history"""
+    pass
+
+@executions.command()
+@click.option('--days', default=30, help='Days to keep executions (default: 30)')
+@click.option('--dry-run', is_flag=True, help='Show what would be deleted without actually deleting')
+def cleanup(days: int, dry_run: bool):
+    """Clean up expired executions"""
+    async def run_cleanup():
+        async for db in get_db():
+            service = ExecutionHistoryService(db)
+            
+            if dry_run:
+                # Calculate what would be deleted
+                cutoff_date = datetime.utcnow() - timedelta(days=days)
+                console.print(f"[yellow]Would delete executions older than {cutoff_date}[/yellow]")
+                # TODO: Add dry-run logic to service
+            else:
+                result = await service.cleanup_expired_executions(days)
+                console.print(f"[green]Deleted {result['executions_deleted']} executions and {result['nodes_deleted']} nodes[/green]")
+                console.print(f"Cutoff date: {result['cutoff_date']}")
+            break
+    
+    asyncio.run(run_cleanup())
+
+@executions.command()
+@click.option('--user-id', required=True, help='User ID to get statistics for')
+@click.option('--days', default=30, help='Days to analyze (default: 30)')
+def stats(user_id: str, days: int):
+    """Get execution statistics for a user"""
+    async def run_stats():
+        async for db in get_db():
+            service = ExecutionHistoryService(db)
+            stats = await service.get_execution_statistics(user_id, days)
+            
+            console.print(Panel.fit(
+                f"[bold blue]Execution Statistics (Last {days} days)[/bold blue]",
+                border_style="blue"
+            ))
+            
+            stats_table = Table(title="User Execution Statistics")
+            stats_table.add_column("Metric", style="cyan")
+            stats_table.add_column("Value", style="green")
+            
+            stats_table.add_row("Total Executions", str(stats['total_executions']))
+            stats_table.add_row("Successful", str(stats['successful_executions']))
+            stats_table.add_row("Failed", str(stats['failed_executions']))
+            stats_table.add_row("Success Rate", f"{stats['success_rate']:.1f}%")
+            stats_table.add_row("Total Tokens", f"{stats['total_tokens']:,}")
+            stats_table.add_row("Total Cost", f"${stats['total_cost_dollars']:.2f}")
+            if stats['avg_execution_time_formatted']:
+                stats_table.add_row("Average Execution Time", stats['avg_execution_time_formatted'])
+            
+            console.print(stats_table)
+            break
+    
+    asyncio.run(run_stats())
+
+@executions.command()
+@click.option('--flow-id', required=True, help='Agent flow ID to get metrics for')
+@click.option('--days', default=30, help='Days to analyze (default: 30)')
+def metrics(flow_id: str, days: int):
+    """Get performance metrics for a specific agent flow"""
+    async def run_metrics():
+        async for db in get_db():
+            service = ExecutionHistoryService(db)
+            metrics = await service.get_agent_performance_metrics(flow_id, days)
+            
+            console.print(Panel.fit(
+                f"[bold blue]Agent Performance Metrics (Last {days} days)[/bold blue]",
+                border_style="blue"
+            ))
+            
+            metrics_table = Table(title="Agent Performance")
+            metrics_table.add_column("Metric", style="cyan")
+            metrics_table.add_column("Value", style="green")
+            
+            metrics_table.add_row("Flow ID", metrics['flow_id'])
+            metrics_table.add_row("Total Executions", str(metrics['total_executions']))
+            metrics_table.add_row("Successful", str(metrics['successful_executions']))
+            metrics_table.add_row("Failed", str(metrics['failed_executions']))
+            metrics_table.add_row("Success Rate", f"{metrics['success_rate']:.1f}%")
+            if metrics['avg_execution_time_formatted']:
+                metrics_table.add_row("Average Execution Time", metrics['avg_execution_time_formatted'])
+            
+            console.print(metrics_table)
+            
+            if metrics['node_performance']:
+                node_table = Table(title="Node Performance")
+                node_table.add_column("Node Type", style="cyan")
+                node_table.add_column("Execution Count", style="green")
+                node_table.add_column("Average Duration", style="yellow")
+                
+                for node in metrics['node_performance']:
+                    node_table.add_row(
+                        node['node_type'],
+                        str(node['execution_count']),
+                        node['avg_duration_formatted'] or "N/A"
+                    )
+                
+                console.print(node_table)
+            break
+    
+    asyncio.run(run_metrics())
+
+@executions.command()
+@click.option('--days', default=30, help='Days to keep executions (default: 30)')
+def schedule_cleanup(days: int):
+    """Schedule automatic cleanup task"""
+    async def run_schedule():
+        async for db in get_db():
+            service = ExecutionHistoryService(db)
+            service.schedule_cleanup_task(days)
+            console.print(f"[green]Scheduled daily cleanup for executions older than {days} days[/green]")
+            console.print("[yellow]Cleanup task is running in background...[/yellow]")
+            console.print("[cyan]Press Ctrl+C to stop[/cyan]")
+            
+            # Keep the task running
+            try:
+                await asyncio.sleep(24 * 60 * 60)  # Run for 24 hours
+            except KeyboardInterrupt:
+                console.print("[yellow]Cleanup task stopped[/yellow]")
+            break
+    
+    asyncio.run(run_schedule())
 
 if __name__ == '__main__':
     cli()

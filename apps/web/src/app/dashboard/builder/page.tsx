@@ -79,6 +79,7 @@ import AggregatorNode from '@/components/dashboard/builder/nodes/aggregator-node
 import FlowControlNode from '@/components/dashboard/builder/nodes/flowcontrol-node';
 import ToolsNode from '@/components/dashboard/builder/nodes/tools-node';
 import SleepNode from '@/components/dashboard/builder/nodes/sleep-node';
+import TriggerAgentNode from '@/components/dashboard/builder/nodes/trigger-agent-node';
 
 // Import sidebar and components
 import BuilderSidebar from '@/components/dashboard/builder/builder-sidebar';
@@ -126,6 +127,7 @@ const nodeTypes = {
   flowControl: FlowControlNode,
   tools: ToolsNode,
   sleep: SleepNode,
+  triggerAgent: TriggerAgentNode,
 };
 
 const initialNodes: Node[] = [
@@ -321,8 +323,9 @@ export default function AgentBuilderPage() {
         case 'discord':
         case 'twitter':
         case 'webhook':
+        case 'sheets':
           nodeData = {
-            label: type.charAt(0).toUpperCase() + type.slice(1),
+            label: 'Google Sheets',
             configured: false,
             endpoint: '',
           };
@@ -469,7 +472,8 @@ export default function AgentBuilderPage() {
       
       const newNode: Node = {
         id: nodeId,
-        type: type === 'openai' || type === 'anthropic' || type === 'google' ? 'llm' : type,
+        type: type === 'openai' || type === 'anthropic' || type === 'google' ? 'llm' : 
+              type === 'sheets' || type === 'slack' || type === 'gmail' || type === 'discord' || type === 'twitter' || type === 'webhook' ? 'tool' : type,
         position,
         data: nodeData,
       };
