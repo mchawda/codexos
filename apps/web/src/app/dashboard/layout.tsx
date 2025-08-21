@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-NIA-Proprietary
+'use client';
+
 import type { Metadata } from 'next';
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';

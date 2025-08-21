@@ -11,6 +11,7 @@ import { AgentToolbar } from '@/components/dashboard/agent-toolbar';
 import { AgentCard } from '@/components/dashboard/agent-card';
 import { AgentGraphView } from '@/components/dashboard/agent-graph-view';
 import { useAgentStore } from '@/lib/stores/agent-store';
+import type { Agent, AgentVersion } from '@/lib/stores/agent-store';
 import { 
   Bot, 
   Plus, 
@@ -53,7 +54,7 @@ export default function AgentsPage() {
         description: 'Automatically reviews pull requests and provides feedback',
         type: 'autonomous' as const,
         agentType: 'LLM' as const,
-        status: 'active' as 'active' | 'inactive' | 'error' | 'running',
+        status: 'active' as const,
         lastRun: '2 minutes ago',
         successRate: 98.5,
         executionCount: 1247,
@@ -99,7 +100,7 @@ export default function AgentsPage() {
         description: 'Generates and updates API documentation from code',
         type: 'scheduled' as const,
         agentType: 'Tool' as const,
-        status: 'running' as 'active' | 'inactive' | 'error' | 'running',
+        status: 'running' as const,
         lastRun: 'Running now',
         successRate: 100,
         executionCount: 89,
@@ -131,7 +132,7 @@ export default function AgentsPage() {
         description: 'Analyzes and categorizes incoming bug reports',
         type: 'autonomous' as const,
         agentType: 'RAG' as const,
-        status: 'inactive' as 'active' | 'inactive' | 'error' | 'running',
+        status: 'inactive' as const,
         lastRun: '1 hour ago',
         successRate: 92.3,
         executionCount: 456,
@@ -163,7 +164,7 @@ export default function AgentsPage() {
         description: 'Monitors and updates project dependencies safely',
         type: 'scheduled' as const,
         agentType: 'Trigger Agent' as const,
-        status: 'error' as 'active' | 'inactive' | 'error' | 'running',
+        status: 'error' as const,
         lastRun: '3 hours ago',
         successRate: 87.5,
         executionCount: 234,
@@ -217,12 +218,12 @@ export default function AgentsPage() {
     });
   };
 
-  const handleToggleStatus = (agent: any) => {
+  const handleToggleStatus = (agent: Agent) => {
     const updatedAgents = agents.map(a => 
       a.id === agent.id 
         ? { 
             ...a, 
-            status: a.status === 'active' || a.status === 'running' ? 'inactive' : 'active' 
+            status: (a.status === 'active' || a.status === 'running') ? 'inactive' as const : 'active' as const
           } 
         : a
     );
@@ -235,7 +236,7 @@ export default function AgentsPage() {
     });
   };
 
-  const handleVersionChange = (agent: any, version: any) => {
+  const handleVersionChange = (agent: Agent, version: AgentVersion) => {
     // In a real implementation, this would load the flow from the version
     toast({
       title: "Version Loaded",
