@@ -46,7 +46,7 @@ class VaultItem(Base, TimestampMixin):
 class VaultAccessLog(Base, TimestampMixin):
     """Audit log for vault access"""
 
-    __tablename__ = "vault_access_logs"
+    __tablename__ = "legacy_vault_access_logs"
 
     id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
     vault_item_id = Column(PGUUID(as_uuid=True), ForeignKey("vault_items.id"), nullable=False)

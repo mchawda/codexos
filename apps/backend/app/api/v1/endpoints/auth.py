@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.core.config import settings
-from app.core.security import (
+from app.core.auth import (
     create_access_token,
     create_refresh_token,
     decode_token,
@@ -70,7 +70,7 @@ async def register(
         )
     
     # Create new user
-    from app.core.security import get_password_hash
+    from app.core.auth import get_password_hash
     
     user = User(
         email=user_in.email,

@@ -8,7 +8,7 @@ from app.models.oauth import TenantOAuthConfig, OAuthUser, IdentityProviderType,
 from app.models.secure_vault import SecureVault, VaultAccessLog as SecureVaultAccessLog, VaultEncryptionKey, VaultItemType, VaultItemStatus
 from app.models.audit import AuditLog, AuditEventCategory, AuditEventType, ComplianceReport
 from app.models.agent import AgentFlow, Execution, NodeType
-from app.models.vault import VaultItem, VaultAccessLog
+from app.models.vault import VaultItem, VaultAccessLog as LegacyVaultAccessLog
 from app.models.rag import Document, DocumentChunk, SearchHistory
 from app.models.marketplace import (
     MarketplaceCategory, MarketplaceItem, MarketplacePurchase,
@@ -61,7 +61,7 @@ __all__ = [
     
     # Legacy Vault models
     "VaultItem",
-    "VaultAccessLog",
+    "LegacyVaultAccessLog",
     
     # RAG models
     "Document",

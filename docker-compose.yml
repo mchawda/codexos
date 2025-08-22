@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
+# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 services:
   # PostgreSQL Database
   postgres:

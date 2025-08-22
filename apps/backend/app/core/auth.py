@@ -11,12 +11,13 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
 from jose import JWTError, jwt
+from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 import structlog
 
 from app.core.config import settings
-from app.core.database import get_db
+from app.db.session import get_db
 from app.models.user import User, UserStatus
 from app.models.tenant import Tenant, TenantStatus
 from app.models.rbac import Permission
@@ -25,7 +26,7 @@ from app.models.audit import AuditLog, AuditEventType
 logger = structlog.get_logger()
 
 # OAuth2 schemes
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login", auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_PREFIX}/auth/login", auto_error=False)
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
@@ -329,3 +330,61 @@ async def get_user_from_api_key(
     await db.commit()
     
     return user
+
+
+# JWT Token functions
+def create_access_token(subject: str, scopes: List[str] = None) -> str:
+    """Create JWT access token"""
+    if scopes is None:
+        scopes = []
+    
+    expire = datetime.utcnow() + timedelta(
+        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+    
+    to_encode = {
+        "exp": expire,
+        "sub": str(subject),
+        "type": "access",
+        "scopes": scopes
+    }
+    
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+def create_refresh_token(subject: str) -> str:
+    """Create JWT refresh token"""
+    expire = datetime.utcnow() + timedelta(
+        days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+    )
+    
+    to_encode = {
+        "exp": expire,
+        "sub": str(subject),
+        "type": "refresh"
+    }
+    
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+def decode_token(token: str) -> Optional[Dict[str, Any]]:
+    """Decode JWT token"""
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        return payload
+    except JWTError:
+        return None
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify password against hash"""
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    """Hash password"""
+    return pwd_context.hash(password)
+
+
+# Password context
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

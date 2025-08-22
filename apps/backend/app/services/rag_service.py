@@ -9,15 +9,11 @@ import tempfile
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 import chromadb
-from chromadb.config import Settings
 
 class RAGService:
     def __init__(self):
-        # Initialize ChromaDB client
-        self.client = chromadb.Client(Settings(
-            chroma_db_impl="duckdb+parquet",
-            persist_directory="./chroma_db"
-        ))
+        # Initialize ChromaDB client with new configuration
+        self.client = chromadb.PersistentClient(path="./chroma_db")
         
         # Create or get collection
         self.collection = self.client.get_or_create_collection(

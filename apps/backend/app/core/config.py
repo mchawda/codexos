@@ -89,8 +89,7 @@ class Settings(BaseSettings):
     ENABLE_MULTIMODAL: bool = True
     ENABLE_SELF_HOSTED: bool = True
 
-    class Config:
-        case_sensitive = True
+
 
 
 @lru_cache()

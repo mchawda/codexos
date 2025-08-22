@@ -7,7 +7,7 @@ from uuid import uuid4
 from enum import Enum
 from datetime import datetime
 
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text, JSON, Index, UniqueConstraint
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text, JSON, Index, UniqueConstraint, Integer
 from sqlalchemy.dialects.postgresql import UUID as PGUUID, JSONB, ARRAY
 from sqlalchemy.orm import relationship
 

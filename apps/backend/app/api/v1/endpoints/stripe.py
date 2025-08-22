@@ -4,10 +4,11 @@ Stripe webhook and payment endpoints
 """
 
 import stripe
+from typing import Dict, Any
 from fastapi import APIRouter, Request, HTTPException, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, get_current_user
 from app.core.config import settings
 from app.services.stripe_service import stripe_service
 from app.core.monitoring import track_marketplace_transaction

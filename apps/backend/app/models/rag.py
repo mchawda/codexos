@@ -22,7 +22,7 @@ class Document(Base, TimestampMixin):
     name = Column(String(255), nullable=False)
     source_type = Column(String(50), nullable=False)  # pdf, github, web, text
     source_url = Column(String(500))
-    metadata = Column(JSON, default={})
+    extra_data = Column(JSON, default={})
     chunk_count = Column(Integer, default=0)
     token_count = Column(Integer, default=0)
     status = Column(String(50), default="pending")  # pending, processing, ready, error
@@ -47,7 +47,7 @@ class DocumentChunk(Base, TimestampMixin):
     chunk_index = Column(Integer, nullable=False)
     content = Column(Text, nullable=False)
     embedding_id = Column(String(255))  # ID in vector store
-    metadata = Column(JSON, default={})
+    extra_data = Column(JSON, default={})
     token_count = Column(Integer)
     
     # Relationships

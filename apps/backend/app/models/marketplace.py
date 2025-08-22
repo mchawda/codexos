@@ -8,7 +8,7 @@ from enum import Enum
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text, Integer, Numeric, Index, UniqueConstraint, CheckConstraint
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text, Integer, Numeric, Index, UniqueConstraint, CheckConstraint, Table
 from sqlalchemy.dialects.postgresql import UUID as PGUUID, JSONB, ARRAY
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property

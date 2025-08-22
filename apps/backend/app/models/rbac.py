@@ -80,7 +80,7 @@ class Role(Base, TimestampMixin):
     priority = Column(Integer, default=0)  # Higher priority overrides lower
     
     # Metadata
-    metadata = Column(JSONB, default={})
+    extra_data = Column(JSONB, default={})
     
     # Relationships
     tenant = relationship("Tenant", back_populates="roles")
@@ -124,7 +124,7 @@ class Permission(Base, TimestampMixin):
     is_active = Column(Boolean, default=True)
     
     # Metadata
-    metadata = Column(JSONB, default={})
+    extra_data = Column(JSONB, default={})
     
     # Relationships
     tenant = relationship("Tenant", back_populates="permissions")

@@ -131,7 +131,7 @@ class ExecutionNode(Base, TimestampMixin):
     error_message = Column(Text, nullable=True)
     
     # Additional metadata
-    metadata = Column(JSON, nullable=True)  # Tool names, model info, etc.
+    extra_data = Column(JSON, nullable=True)  # Tool names, model info, etc.
     
     # Relationships
     execution = relationship("Execution", back_populates="execution_nodes")

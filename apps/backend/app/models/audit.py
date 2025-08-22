@@ -8,7 +8,7 @@ from uuid import uuid4
 from enum import Enum
 from datetime import datetime
 
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text, JSON, Index, BigInteger
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text, JSON, Index, BigInteger, Integer
 from sqlalchemy.dialects.postgresql import UUID as PGUUID, JSONB, ARRAY
 from sqlalchemy.orm import relationship
 
@@ -160,7 +160,7 @@ class AuditLog(Base):
     city = Column(String(100))
     
     # Additional metadata
-    metadata = Column(JSONB, default={})
+    extra_data = Column(JSONB, default={})
     tags = Column(ARRAY(String), default=[])
     
     # Risk and compliance

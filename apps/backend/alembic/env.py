@@ -11,7 +11,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.core.config import settings
 from app.db.base import Base
-from app.db.base_class import Base as BaseClass
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
