@@ -8,7 +8,8 @@
 
 > A next-level autonomous engineering OS. Modular, agentic, real-time, and scalable.
 
-![Kapture 2025-08-23 at 02 08 59](https://github.com/user-attachments/assets/0d056e68-984d-4eff-927a-b22fadbb840f)
+
+            ![Kapture 2025-08-23 at 02 08 59](https://github.com/user-attachments/assets/e636ee06-ec9a-4cb0-9a3d-5c89aadd9a6e)
 
 
 ## 🚀 Overview
