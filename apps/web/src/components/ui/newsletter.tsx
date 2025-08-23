@@ -40,10 +40,10 @@ export function Newsletter({
   };
 
   return (
-    <div className={`border-t border-white/10 pt-12 ${className}`}>
+    <div className={`border-t border-border/20 pt-12 ${className}`}>
       <div className="max-w-2xl mx-auto text-center">
-        <h4 className="text-lg font-medium text-white mb-4 font-manrope">{title}</h4>
-        <p className="text-sm text-white/60 mb-8">{description}</p>
+        <h4 className="text-lg font-medium text-foreground mb-4 font-manrope">{title}</h4>
+        <p className="text-sm text-muted-foreground mb-8">{description}</p>
         
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 justify-center">
           <input
@@ -59,7 +59,7 @@ export function Newsletter({
           <motion.button
             type="submit"
             disabled={isSubmitting || isSubmitted}
-            className={`px-8 py-3 rounded-xl text-sm font-medium text-white transition-all duration-300 flex items-center justify-center gap-2 ${
+            className={`px-8 py-3 rounded-xl text-sm font-medium text-foreground transition-all duration-300 flex items-center justify-center gap-2 ${
               isSubmitted 
                 ? 'bg-green-500/15 border-green-500/30' 
                 : 'glass-blue border border-blue-500/30 hover:border-blue-500/50'
@@ -72,7 +72,7 @@ export function Newsletter({
                 Subscribed!
               </>
             ) : isSubmitting ? (
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-foreground/30 border-t-foreground rounded-full animate-spin" />
             ) : (
               <>
                 Subscribe

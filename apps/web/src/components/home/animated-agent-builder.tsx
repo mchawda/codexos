@@ -99,7 +99,7 @@ export default function AnimatedAgentBuilder() {
       {[...Array(25)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-1 h-1 bg-white/30 rounded-full"
+          className="absolute w-1 h-1 bg-foreground/30 rounded-full"
           animate={{
             x: [0, 150, 0],
             y: [0, -150, 0],
@@ -142,19 +142,19 @@ export default function AnimatedAgentBuilder() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           whileHover={{ scale: 1.05, y: node.y - 3 }}
         >
-          <div className={`w-full h-full rounded-2xl bg-gradient-to-br ${node.color} flex items-center justify-center shadow-2xl ${getStatusColor(node.status)} relative z-10 border border-white/10`}>
+          <div className={`w-full h-full rounded-2xl bg-gradient-to-br ${node.color} flex items-center justify-center shadow-2xl ${getStatusColor(node.status)} relative z-10 border border-border/20`}>
             <node.icon className={`${node.size === 56 ? 'w-7 h-7' : 'w-6 h-6'} text-white`} />
           </div>
           
           {/* Enhanced Node Label */}
-          <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 text-sm text-white/70 font-medium whitespace-nowrap bg-black/20 px-3 py-1 rounded-full backdrop-blur-sm">
+          <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 text-sm text-foreground/70 font-medium whitespace-nowrap bg-background/20 px-3 py-1 rounded-full backdrop-blur-sm">
             {node.label}
           </div>
 
           {/* Enhanced Status Indicator */}
           {node.status === 'processing' && (
             <motion.div
-              className="absolute -top-3 -right-3 w-5 h-5 bg-blue-400 rounded-full border-2 border-white"
+              className="absolute -top-3 -right-3 w-5 h-5 bg-blue-400 rounded-full border-2 border-background"
               animate={{ 
                 scale: [1, 1.3, 1],
                 boxShadow: ["0 0 0 0 rgba(96, 165, 250, 0.7)", "0 0 0 10px rgba(96, 165, 250, 0)", "0 0 0 0 rgba(96, 165, 250, 0)"]
@@ -166,13 +166,13 @@ export default function AnimatedAgentBuilder() {
           {/* Success indicator */}
           {node.status === 'success' && (
             <motion.div
-              className="absolute -top-3 -right-3 w-5 h-5 bg-green-400 rounded-full border-2 border-white flex items-center justify-center"
+              className="absolute -top-3 -right-3 w-5 h-5 bg-green-400 rounded-full border-2 border-background flex items-center justify-center"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.3 }}
             >
               <motion.div
-                className="w-2 h-2 bg-white rounded-full"
+                className="w-2 h-2 bg-background rounded-full"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
@@ -230,7 +230,7 @@ export default function AnimatedAgentBuilder() {
 
       {/* Enhanced Floating Code Blocks */}
       <motion.div
-        className="absolute top-24 right-24 text-sm font-mono text-white/50 bg-white/10 p-4 rounded-xl border border-white/20 backdrop-blur-sm shadow-xl"
+        className="absolute top-24 right-24 text-sm font-mono text-foreground/50 bg-background/10 p-4 rounded-xl border border-border/20 backdrop-blur-sm shadow-xl"
         animate={{ y: [0, -15, 0], rotate: [0, 1, 0] }}
         transition={{ duration: 6, repeat: Infinity }}
         style={{ zIndex: 35 }}
@@ -240,7 +240,7 @@ export default function AnimatedAgentBuilder() {
       </motion.div>
 
       <motion.div
-        className="absolute bottom-36 left-24 text-sm font-mono text-white/50 bg-white/10 p-4 rounded-xl border border-white/20 backdrop-blur-sm shadow-xl"
+        className="absolute bottom-36 left-24 text-sm font-mono text-foreground/50 bg-background/10 p-4 rounded-xl border border-border/20 backdrop-blur-sm shadow-xl"
         animate={{ y: [0, 15, 0], rotate: [0, -1, 0] }}
         transition={{ duration: 5, repeat: Infinity, delay: 1 }}
         style={{ zIndex: 35 }}
@@ -251,15 +251,15 @@ export default function AnimatedAgentBuilder() {
       </motion.div>
 
       {/* Enhanced Performance Metrics */}
-      <div className="absolute top-8 right-8 flex items-center gap-3 text-sm text-white/70 bg-black/20 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10">
+      <div className="absolute top-8 right-8 flex items-center gap-3 text-sm text-foreground/70 bg-background/20 px-4 py-2 rounded-full backdrop-blur-sm border border-border/20">
         <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
         <span>Processing: {executionStep + 1}/5</span>
       </div>
 
       {/* Live Execution Badge */}
-      <div className="absolute top-8 left-8 flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium border border-white/20 z-10 bg-blue-500/20 backdrop-blur-sm">
+      <div className="absolute top-8 left-8 flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium border border-border/20 z-10 bg-blue-500/20 backdrop-blur-sm">
         <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-        <span className="text-white">Live Execution</span>
+        <span className="text-foreground">Live Execution</span>
       </div>
     </div>
   );

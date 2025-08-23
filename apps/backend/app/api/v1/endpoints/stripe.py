@@ -198,7 +198,6 @@ async def create_seller_account(
     try:
         # Create Stripe Connect account
         account = await stripe_service.create_seller_account(
-            db=db,
             user=current_user,
             business_info=business_info
         )
@@ -206,8 +205,8 @@ async def create_seller_account(
         # Create account link for onboarding
         account_link = await stripe_service.create_account_link(
             account_id=account.id,
-            refresh_url=f"{settings.FRONTEND_URL}/dashboard/marketplace/seller/onboarding",
-            return_url=f"{settings.FRONTEND_URL}/dashboard/marketplace/seller"
+            refresh_url=f"{settings.FRONTEND_URL}/marketplace/seller/onboarding",
+            return_url=f"{settings.FRONTEND_URL}/marketplace/seller/dashboard"
         )
         
         return {
@@ -219,6 +218,62 @@ async def create_seller_account(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
+        )
+
+
+@router.get("/session-details")
+async def get_session_details(
+    session_id: str,
+    current_user = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get details of a Stripe checkout session"""
+    try:
+        # Retrieve the session from Stripe
+        session = stripe.checkout.Session.retrieve(session_id)
+        
+        # Verify this session belongs to the current user
+        if session.client_reference_id != str(current_user.id):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied to this session"
+            )
+        
+        # Get the marketplace item details
+        item_id = session.metadata.get("item_id")
+        if not item_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Session metadata missing item_id"
+            )
+        
+        item = await db.get(MarketplaceItem, item_id)
+        if not item:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Marketplace item not found"
+            )
+        
+        return {
+            "session_id": session.id,
+            "item_name": item.name,
+            "amount": session.amount_total / 100,  # Convert from cents
+            "currency": session.currency.upper(),
+            "order_id": session.payment_intent if session.payment_intent else session.subscription,
+            "created_at": session.created,
+            "status": session.status,
+            "payment_status": session.payment_status
+        }
+        
+    except stripe.error.StripeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Stripe error: {str(e)}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal error: {str(e)}"
         )
 
 

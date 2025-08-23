@@ -66,7 +66,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                className="p-10 lg:p-12 shadow-2xl border border-white/10 rounded-3xl glass-dark"
+                className="p-10 lg:p-12 shadow-2xl border border-border rounded-3xl glass-dark"
               >
                 
                 {/* Rating */}
@@ -76,30 +76,30 @@ export default function HomePage() {
                       <Star key={i} className="w-3.5 h-3.5 star-rating" />
                     ))}
                   </div>
-                  <span className="text-xs font-medium text-white/50">4.9 • 2,847 developers</span>
+                  <span className="text-xs font-medium text-muted-foreground">4.9 • 2,847 developers</span>
                 </div>
                 
                 {/* Headline */}
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white leading-[1.1] tracking-tight mb-8 font-manrope font-medium">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl text-foreground leading-[1.1] tracking-tight mb-8 font-manrope font-medium">
                   Build with<br />
                   <span className="text-gradient-blue font-manrope font-medium">AI agents</span> autonomously.
                 </h1>
                 
                 {/* Description */}
-                <p className="text-lg text-white/60 leading-relaxed mb-12">
+                <p className="text-lg text-muted-foreground leading-relaxed mb-12">
                   The autonomous engineering OS that orchestrates AI agents to build, test, and deploy software. Enterprise-ready, secure, and infinitely scalable.
                 </p>
                 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 mb-16">
                   <Link href="/dashboard">
-                    <button className="inline-flex items-center justify-center px-8 py-4 rounded-xl hover:bg-blue-500/10 text-white text-sm font-medium border border-blue-500/20 transition-all duration-300 hover:border-blue-500/30 btn-premium w-full sm:w-auto">
+                    <button className="inline-flex items-center justify-center px-8 py-4 rounded-xl hover:bg-blue-500/10 text-foreground text-sm font-medium border border-blue-500/20 transition-all duration-300 hover:border-blue-500/30 btn-premium w-full sm:w-auto">
                       <span>Start Building</span>
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </button>
                   </Link>
                   <Link href="/docs">
-                    <button className="inline-flex items-center justify-center px-8 py-4 rounded-xl hover:bg-white/5 text-white/80 text-sm font-medium border border-white/10 transition-all duration-300 hover:border-white/20 glass-ultra w-full sm:w-auto">
+                    <button className="inline-flex items-center justify-center px-8 py-4 rounded-xl hover:bg-accent text-accent-foreground text-sm font-medium border border-border transition-all duration-300 hover:border-border/60 glass-ultra w-full sm:w-auto">
                       <Play className="w-4 h-4 mr-2" />
                       <span>Watch Demo</span>
                     </button>
@@ -109,22 +109,22 @@ export default function HomePage() {
                 {/* Features */}
                 <div className="grid grid-cols-3 gap-8">
                   <div className="text-center">
-                    <div className="w-10 h-10 flex border-white/10 border rounded-xl mx-auto mb-3 items-center justify-center glass-ultra">
-                      <Zap className="w-4 h-4 text-white" />
+                    <div className="w-10 h-10 flex border-border border rounded-xl mx-auto mb-3 items-center justify-center glass-ultra">
+                      <Zap className="w-4 h-4 text-foreground" />
                     </div>
-                    <div className="text-xs font-medium text-white/70">Real-time</div>
+                    <div className="text-xs font-medium text-muted-foreground">Real-time</div>
                   </div>
                   <div className="text-center">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 border border-white/10 glass-ultra">
-                      <Shield className="w-4 h-4 text-white" />
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 border border-border glass-ultra">
+                      <Shield className="w-4 h-4 text-foreground" />
                     </div>
-                    <div className="text-xs font-medium text-white/70">SOC2 Certified</div>
+                    <div className="text-xs font-medium text-muted-foreground">SOC2 Certified</div>
                   </div>
                   <div className="text-center">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 border border-white/10 glass-ultra">
-                      <Code className="w-4 h-4 text-white" />
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 border border-border glass-ultra">
+                      <Code className="w-4 h-4 text-foreground" />
                     </div>
-                    <div className="text-xs font-medium text-white/70">Open Source</div>
+                    <div className="text-xs font-medium text-muted-foreground">Open Source</div>
                   </div>
                 </div>
               </motion.div>
@@ -136,12 +136,12 @@ export default function HomePage() {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                className="overflow-hidden border border-white/10 rounded-3xl shadow-2xl glass-dark"
+                className="overflow-hidden border border-border rounded-3xl shadow-2xl glass-dark"
               >
                 {/* Badge */}
-                <div className="absolute top-8 left-8 flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium border border-white/20 z-10 glass-blue">
+                <div className="absolute top-8 left-8 flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium border border-blue-500/20 z-10 glass-blue">
                   <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                  <span className="text-white">Live Execution</span>
+                  <span className="text-foreground">Live Execution</span>
                 </div>
 
                 {/* Animated AI Agent Builder */}
@@ -149,13 +149,13 @@ export default function HomePage() {
 
                 {/* Bottom Stats */}
                 <div className="absolute bottom-8 left-8 right-8 grid grid-cols-2 gap-6">
-                  <div className="border-white/10 border rounded-2xl p-6 glass-blue backdrop-blur-xl">
-                    <div className="text-2xl text-white font-manrope font-medium">2.8K+</div>
-                    <div className="text-sm text-white/60 mt-1">Active Agents</div>
+                  <div className="border-border border rounded-2xl p-6 glass-blue backdrop-blur-xl">
+                    <div className="text-2xl text-foreground font-manrope font-medium">2.8K+</div>
+                    <div className="text-sm text-muted-foreground mt-1">Active Agents</div>
                   </div>
-                  <div className="rounded-2xl p-6 border border-white/10 glass-blue backdrop-blur-xl">
-                    <div className="text-2xl text-white font-manrope font-medium">99.9%</div>
-                    <div className="text-sm text-white/60 mt-1">Uptime SLA</div>
+                  <div className="rounded-2xl p-6 border border-border glass-blue backdrop-blur-xl">
+                    <div className="text-2xl text-foreground font-manrope font-medium">99.9%</div>
+                    <div className="text-sm text-muted-foreground mt-1">Uptime SLA</div>
                   </div>
                 </div>
               </motion.div>
@@ -170,40 +170,40 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="lg:p-16 border-white/10 border rounded-3xl p-12 glass-dark"
+            className="lg:p-16 border-border border rounded-3xl p-12 glass-dark"
           >
             <div className="text-center mb-12">
-              <p className="uppercase text-sm font-medium text-white/40 tracking-wide mb-3">Trusted Partners</p>
-              <h3 className="text-2xl text-white tracking-tight mb-4 font-manrope font-medium">Powered by Industry Leaders</h3>
-              <p className="text-base text-white/60 max-w-2xl mx-auto">
+              <p className="uppercase text-sm font-medium text-muted-foreground tracking-wide mb-3">Trusted Partners</p>
+              <h3 className="text-2xl text-foreground tracking-tight mb-4 font-manrope font-medium">Powered by Industry Leaders</h3>
+              <p className="text-base text-muted-foreground max-w-2xl mx-auto">
                 Built on the most advanced AI models and enterprise infrastructure, ensuring reliability and performance at scale.
               </p>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               {partnerLogos.map((logo) => (
-                <div key={logo.name} className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/10 glass-ultra hover:border-white/20 transition-all duration-300 group">
+                <div key={logo.name} className="flex flex-col items-center text-center p-6 rounded-2xl border border-border glass-ultra hover:border-border/60 transition-all duration-300 group">
                   <div className={`w-12 h-12 mb-4 flex items-center justify-center ${logo.color} group-hover:scale-110 transition-transform duration-300`}>
                     <logo.logo className="w-8 h-8" />
                   </div>
-                  <span className="text-sm font-medium text-white/60 group-hover:text-white/80 transition-colors duration-300 tracking-tight mb-2">
+                  <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-300 tracking-tight mb-2">
                     {logo.name}
                   </span>
-                  <p className="text-xs text-white/40">{logo.description}</p>
+                  <p className="text-xs text-muted-foreground">{logo.description}</p>
                 </div>
               ))}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
-                <div className="text-3xl text-white mb-2 font-manrope font-medium">99.8%</div>
-                <p className="text-sm text-white/60">API Uptime</p>
+                <div className="text-3xl text-foreground mb-2 font-manrope font-medium">99.8%</div>
+                <p className="text-sm text-muted-foreground">API Uptime</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl text-white mb-2 font-manrope font-medium">15+</div>
-                <p className="text-sm text-white/60">AI Models</p>
+                <div className="text-3xl text-foreground mb-2 font-manrope font-medium">15+</div>
+                <p className="text-sm text-muted-foreground">AI Models</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl text-white mb-2 font-manrope font-medium">500+</div>
-                <p className="text-sm text-white/60">Tools Available</p>
+                <div className="text-3xl text-foreground mb-2 font-manrope font-medium">500+</div>
+                <p className="text-sm text-muted-foreground">Tools Available</p>
               </div>
             </div>
           </motion.div>
@@ -222,7 +222,7 @@ export default function HomePage() {
               <Badge className="mb-4" variant="outline">
                 Platform Features
               </Badge>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
                 Everything you need to build
                 <span className="block text-gradient">autonomous AI systems</span>
               </h2>
@@ -263,7 +263,7 @@ export default function HomePage() {
                 <Badge className="mb-4" variant="default">
                   Limited Time Offer
                 </Badge>
-                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
                   Ready to revolutionize your workflow?
                 </h2>
                 <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">

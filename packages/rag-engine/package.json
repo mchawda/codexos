@@ -6,9 +6,30 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "build:prod": "tsc && npm run optimize",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "test": "jest"
+    "test": "jest",
+    "test:prod": "jest --ci --coverage --maxWorkers=2",
+    "test:perf": "jest --testNamePattern='performance'",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "optimize": "node scripts/optimize-bundle.js",
+    "deploy:prod": "./deploy-production.sh",
+    "start:prod": "./start-production.sh",
+    "monitor:prod": "./monitor-production.sh",
+    "docker:build": "docker build -f Dockerfile.production --target production -t codexos-rag-engine:prod .",
+    "docker:build:all": "docker build -f Dockerfile.production --target production -t codexos-rag-engine:prod . && docker build -f Dockerfile.production --target development -t codexos-rag-engine:dev . && docker build -f Dockerfile.production --target testing -t codexos-rag-engine:test . && docker build -f Dockerfile.production --target performance -t codexos-rag-engine:perf .",
+    "docker:up": "docker-compose -f docker-compose.production.yml up -d",
+    "docker:down": "docker-compose -f docker-compose.production.yml down",
+    "docker:logs": "docker-compose -f docker-compose.production.yml logs -f",
+    "docker:scale": "docker-compose -f docker-compose.production.yml up -d --scale rag-engine=3",
+    "perf:test": "node dist/performance-test.js",
+    "perf:monitor": "node dist/performance-monitor.js",
+    "health:check": "curl -f http://localhost:3001/health || exit 1",
+    "metrics:export": "curl http://localhost:3001/metrics/export",
+    "performance:summary": "curl http://localhost:3001/performance/summary"
   },
   "dependencies": {
     "@langchain/community": "^0.0.10",
@@ -25,5 +46,31 @@
     "@types/node": "^20.11.0",
     "jest": "^29.7.0",
     "typescript": "^5.3.3"
-  }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "rag",
+    "retrieval-augmented-generation",
+    "vector-search",
+    "embeddings",
+    "ai",
+    "machine-learning",
+    "codexos"
+  ],
+  "author": "CodexOS Team",
+  "license": "LicenseRef-NIA-Proprietary",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codexos/codexos.git",
+    "directory": "packages/rag-engine"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "PRODUCTION_DEPLOYMENT.md",
+    "PERFORMANCE_TUNING.md"
+  ]
 }

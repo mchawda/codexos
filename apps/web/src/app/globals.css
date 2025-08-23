@@ -17,7 +17,7 @@
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 215 25% 27%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
@@ -302,7 +302,15 @@
 
   /* Newsletter input */
   .input-glass {
-    @apply px-4 py-3 rounded-xl text-sm text-white placeholder-white/40 border border-white/10 focus:border-blue-500/30 focus:outline-none transition-all duration-300;
+    @apply px-4 py-3 rounded-xl text-sm text-foreground placeholder-muted-foreground/60 border border-border/20 focus:border-blue-500/30 focus:outline-none transition-all duration-300;
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  .light .input-glass {
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  .dark .input-glass {
     background: rgba(255, 255, 255, 0.05);
   }
 }

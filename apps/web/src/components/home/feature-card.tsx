@@ -26,12 +26,12 @@ export default function FeatureCard({ icon: Icon, title, description, gradient }
         }}
       />
       
-      <div className="relative glass-dark rounded-xl p-6 h-full border border-white/10 group-hover:border-white/20 transition-all duration-300">
+      <div className="relative glass-dark rounded-xl p-6 h-full border border-border group-hover:border-border/60 transition-all duration-300">
         <div className={cn("inline-flex p-3 rounded-lg bg-gradient-to-r", gradient, "bg-opacity-10")}>
-          <Icon className="w-6 h-6 text-white" />
+          <Icon className="w-6 h-6 text-foreground" />
         </div>
         
-        <h3 className="text-xl font-semibold mt-4 mb-2">{title}</h3>
+        <h3 className="text-xl font-semibold mt-4 mb-2 text-foreground">{title}</h3>
         <p className="text-muted-foreground leading-relaxed">{description}</p>
       </div>
     </motion.div>

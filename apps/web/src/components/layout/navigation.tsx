@@ -35,7 +35,7 @@ export default function Navigation() {
       className="fixed top-0 left-0 right-0 z-50 px-6 py-6"
     >
       <div className="max-w-4xl mx-auto">
-        <div className="border border-white/10 rounded-full px-6 py-3" style={{ background: 'rgba(10, 11, 20, 0.9)', backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}>
+        <div className="border border-border/20 rounded-full px-6 py-3 bg-background/90 backdrop-blur-md">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-3">
@@ -52,12 +52,12 @@ export default function Navigation() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-1 text-sm font-medium text-white/60">
+            <div className="hidden md:flex items-center gap-1 text-sm font-medium text-muted-foreground">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="hover:text-white transition-colors duration-300 px-4 py-2 rounded-full hover:bg-white/5"
+                  className="hover:text-foreground transition-colors duration-300 px-4 py-2 rounded-full hover:bg-accent/10"
                 >
                   {item.label}
                 </Link>
@@ -67,12 +67,11 @@ export default function Navigation() {
             {/* Right Side Actions */}
             <div className="hidden md:flex items-center gap-2">
               <button 
-                className="hover:bg-white/5 p-2 rounded-full transition-all duration-300 border border-white/5"
-                style={{ background: 'rgba(255, 255, 255, 0.02)' }}
+                className="hover:bg-accent/10 p-2 rounded-full transition-all duration-300 border border-border/20"
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 aria-label="Toggle theme"
               >
-                <div className="w-4 h-4 text-white/60">
+                <div className="w-4 h-4 text-muted-foreground">
                   {mounted && (
                     theme === 'dark' ? (
                       <Sun className="w-4 h-4" />
@@ -87,30 +86,27 @@ export default function Navigation() {
                 href="https://github.com/mchawda"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:bg-white/5 p-2 rounded-full transition-all duration-300 border border-white/5"
-                style={{ background: 'rgba(255, 255, 255, 0.02)' }}
+                className="hover:bg-accent/10 p-2 rounded-full transition-all duration-300 border border-border/20"
                 aria-label="GitHub"
               >
-                <Github className="w-4 h-4 text-white/60" />
+                <Github className="w-4 h-4 text-muted-foreground" />
               </a>
 
               <Link href="/login">
                 <button 
-                  className="hover:bg-white/5 p-2 rounded-full transition-all duration-300 border border-white/5"
-                  style={{ background: 'rgba(255, 255, 255, 0.02)' }}
+                  className="hover:bg-accent/10 p-2 rounded-full transition-all duration-300 border border-border/20"
                   aria-label="Account"
                 >
-                  <Users className="w-4 h-4 text-white/60" />
+                  <Users className="w-4 h-4 text-muted-foreground" />
                 </button>
               </Link>
               
               <Link href="/dashboard" className="relative">
                 <button 
-                  className="hover:bg-white/5 p-2 rounded-full transition-all duration-300 border border-white/5"
-                  style={{ background: 'rgba(255, 255, 255, 0.02)' }}
+                  className="hover:bg-accent/10 p-2 rounded-full transition-all duration-300 border border-border/20"
                   aria-label="Dashboard"
                 >
-                  <Code2 className="w-4 h-4 text-white/60" />
+                  <Code2 className="w-4 h-4 text-muted-foreground" />
                   <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center font-medium">!</span>
                 </button>
               </Link>
