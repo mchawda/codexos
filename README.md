@@ -25,6 +25,9 @@ CodexOS is a revolutionary platform that transforms software development through
 - **💳 Stripe Integration** - Built-in payment processing and subscriptions
 - **📊 Real-time Monitoring** - Prometheus metrics and Grafana dashboards
 - **🔄 Auto-scaling** - Production-ready with load balancing
+- **🎯 Multi-Agent Orchestration** - Complex workflows with intelligent coordination
+- **🤝 Real-time Collaboration** - Multi-user development with live sync
+- **🧩 Advanced AI Models** - Integration with GPT-4, Claude, Gemini, and more
 
 ## 🎬 Demo
 
@@ -44,6 +47,7 @@ CodexOS/
 ├── packages/
 │   ├── agent-engine/     # Core execution engine
 │   ├── rag-engine/       # RAG implementation
+│   ├── multi-agent-orchestrator/  # Advanced orchestration
 │   ├── toolkit/          # Shared tools and utilities
 │   └── ui/               # Shared UI components
 └── docker-compose.yml    # Full stack orchestration

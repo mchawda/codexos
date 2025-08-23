@@ -54,6 +54,12 @@ Welcome to the CodexOS documentation! This directory contains comprehensive guid
 - **[CI/CD Pipeline](ci-cd.md)** - Continuous integration and deployment
 - **[Infrastructure](infrastructure.md)** - Infrastructure as code and management
 
+### 🎯 Advanced Features
+- **[Phase 2: Advanced Agent Capabilities](phase-2-advanced-features.md)** - Multi-agent orchestration, AI models, collaboration
+- **[Multi-Agent Orchestrator](../packages/multi-agent-orchestrator/README.md)** - Complex workflow orchestration
+- **[Sub-Agent Chaining](sub-agent-chaining.md)** - Advanced agent composition patterns
+- **[Tenancy](tenancy.md)** - Multi-tenant architecture and management
+
 ## 🔗 Quick Navigation
 
 ### Popular Pages
