@@ -4,6 +4,7 @@
   <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" />
   <img src="https://img.shields.io/badge/license-proprietary-red.svg" />
   <img src="https://img.shields.io/badge/status-private_beta-yellow.svg" />
+  <img src="https://img.shields.io/badge/docs-inside_repo-📖-brightgreen.svg" />
 </p>
 
 > A next-level autonomous engineering OS. Modular, agentic, real-time, and scalable.
@@ -29,6 +30,14 @@ CodexOS is a revolutionary platform that transforms software development through
 - **💳 Stripe Integration** - Built-in payment processing and subscriptions
 - **📊 Real-time Monitoring** - Prometheus metrics and Grafana dashboards
 - **🔄 Auto-scaling** - Production-ready with load balancing
+
+## 🎬 Demo
+
+<p align="center">
+  <img src="demo.gif" alt="CodexOS Visual Flow Editor Demo" width="800" />
+</p>
+
+*Experience the power of visual agent building with CodexOS's intuitive flow editor. Build, test, and deploy AI agents in minutes.*
 
 ## 🏗️ Architecture
 

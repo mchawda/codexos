@@ -1,5 +1,10 @@
 # Authentication API
 
+> **📚 Docs ▸ API Reference**  
+> **Last Updated**: $(date)  
+> **Status**: Active
+
+
 CodexOS uses JWT-based authentication with support for OAuth2/SSO providers.
 
 ## Endpoints

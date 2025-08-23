@@ -1,5 +1,10 @@
 # CodexOS API Reference
 
+> **📚 Docs ▸ API Reference**  
+> **Last Updated**: $(date)  
+> **Status**: Active
+
+
 ## Overview
 
 The CodexOS API is a RESTful API that provides programmatic access to all platform features. 

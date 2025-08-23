@@ -1,5 +1,9 @@
 # CodexOS Threat Model
 
+> **📚 Docs ▸ Security & Threat Model**  
+> **Last Updated**: $(date)  
+> **Status**: Active
+
 ## Overview
 
 This document outlines the security threats, attack vectors, and mitigation strategies for the CodexOS autonomous engineering operating system. The threat model follows the STRIDE methodology and provides a comprehensive security analysis.
@@ -393,3 +397,16 @@ This threat model provides a comprehensive security framework for CodexOS. Regul
 3. Update threat model based on findings
 4. Enhance monitoring and detection capabilities
 5. Develop security training programs
+
+## 🔗 Related Documentation
+
+- **[Security Policy](security.md)** - Comprehensive security guidelines and policies
+- **[RBAC Guide](rbac.md)** - Role-based access control implementation details
+- **[Security Incidents Runbook](runbooks/security-incidents.md)** - Incident response procedures
+- **[Monitoring & Alerting](runbooks/monitoring-alerting.md)** - Security monitoring setup
+- **[Backup & Recovery](runbooks/backup-recovery.md)** - Data protection and recovery procedures
+- **[Certificate Management](runbooks/certificate-management.md)** - SSL/TLS security management
+- **[Log Management](runbooks/log-management.md)** - Security audit logging and analysis
+- **[System Updates](runbooks/system-updates.md)** - Security patch management
+- **[Architecture](architecture.md)** - System design and security considerations
+- **[Production Deployment](production.md)** - Security-hardened production setup

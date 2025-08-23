@@ -1,4 +1,8 @@
-# Deploying CodexOS to Hostinger KVM8 VPS
+# CodexOS Hostinger Deployment
+
+> **📚 Docs ▸ Deployment & Operations**  
+> **Last Updated**: $(date)  
+> **Status**: Active
 
 ## VPS Requirements Check
 

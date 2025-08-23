@@ -10,7 +10,8 @@ from pydantic import BaseModel
 
 from app.api.deps import get_current_user, get_db
 from app.models.user import User
-from app.services.rag_service import RAGService
+# Lazy import to avoid startup issues
+# from app.services.rag_service import RAGService
 from app.schemas.rag import (
     ContextBasketRequest,
     ContextBasketResponse,
@@ -50,8 +51,16 @@ class RAGStats(BaseModel):
     index_size: int
     last_updated: str
 
-# Initialize RAG service
-rag_service = RAGService()
+# Initialize RAG service lazily
+_rag_service = None
+
+def get_rag_service():
+    global _rag_service
+    if _rag_service is None:
+        # Import here to avoid startup issues
+        from app.services.rag_service import RAGService
+        _rag_service = RAGService()
+    return _rag_service
 
 @router.post("/ingest")
 async def ingest_documents(
@@ -65,7 +74,7 @@ async def ingest_documents(
     """
     # Add ingestion task to background
     background_tasks.add_task(
-        rag_service.ingest_documents,
+        get_rag_service().ingest_documents,
         request.sources,
         current_user.id
     )
@@ -97,7 +106,7 @@ async def ingest_file(
     
     # Save file temporarily
     file_content = await file.read()
-    result = await rag_service.ingest_file(
+    result = await get_rag_service().ingest_file(
         file_content,
         file.filename,
         file_ext,
@@ -121,7 +130,7 @@ async def search_documents(
         request.filter = {}
     request.filter['user_id'] = current_user.id
     
-    result = await rag_service.search(
+    result = await get_rag_service().search(
         request.query,
         request.top_k,
         request.filter,
@@ -139,7 +148,7 @@ async def get_rag_stats(
     """
     Get RAG system statistics
     """
-    stats = await rag_service.get_stats(current_user.id)
+    stats = await get_rag_service().get_stats(current_user.id)
     return RAGStats(**stats)
 
 @router.delete("/documents/{document_id}")
@@ -151,7 +160,7 @@ async def delete_document(
     """
     Delete a specific document
     """
-    await rag_service.delete_document(document_id, current_user.id)
+    await get_rag_service().delete_document(document_id, current_user.id)
     return {"status": "deleted", "document_id": document_id}
 
 @router.delete("/clear")
@@ -162,7 +171,7 @@ async def clear_all_documents(
     """
     Clear all documents for the current user
     """
-    await rag_service.clear_user_documents(current_user.id)
+    await get_rag_service().clear_user_documents(current_user.id)
     return {"status": "cleared", "message": "All documents deleted"}
 
 @router.get("/sources")
@@ -173,7 +182,7 @@ async def list_sources(
     """
     List all document sources for the current user
     """
-    sources = await rag_service.list_sources(current_user.id)
+    sources = await get_rag_service().list_sources(current_user.id)
     return {"sources": sources}
 
 @router.post("/reindex")
@@ -186,7 +195,7 @@ async def reindex_documents(
     Reindex all documents (regenerate embeddings)
     """
     background_tasks.add_task(
-        rag_service.reindex_user_documents,
+        get_rag_service().reindex_user_documents,
         current_user.id
     )
     
@@ -206,7 +215,7 @@ async def save_context_basket(
     """
     try:
         # Validate chunks belong to user
-        chunks = await rag_service.get_chunks_by_ids(
+        chunks = await get_rag_service().get_chunks_by_ids(
             request.selected_chunks,
             current_user.id
         )
@@ -221,7 +230,7 @@ async def save_context_basket(
         total_tokens = sum(len(chunk.content) // 4 for chunk in chunks)
         
         # Save context configuration
-        context_id = await rag_service.save_context_basket(
+        context_id = await get_rag_service().save_context_basket(
             user_id=current_user.id,
             query=request.query,
             chunks=chunks,
@@ -250,7 +259,7 @@ async def list_templates(
     """
     List all RAG templates for the current user
     """
-    templates = await rag_service.list_templates(
+    templates = await get_rag_service().list_templates(
         user_id=current_user.id,
         agent_id=agent_id
     )
@@ -265,7 +274,7 @@ async def create_template(
     """
     Create a new RAG template
     """
-    created_template = await rag_service.create_template(
+    created_template = await get_rag_service().create_template(
         user_id=current_user.id,
         template=template
     )
@@ -280,7 +289,7 @@ async def get_template(
     """
     Get a specific RAG template
     """
-    template = await rag_service.get_template(
+    template = await get_rag_service().get_template(
         template_id=template_id,
         user_id=current_user.id
     )
@@ -301,7 +310,7 @@ async def update_template(
     """
     Update a RAG template
     """
-    updated_template = await rag_service.update_template(
+    updated_template = await get_rag_service().update_template(
         template_id=template_id,
         user_id=current_user.id,
         update=update
@@ -322,7 +331,7 @@ async def delete_template(
     """
     Delete a RAG template
     """
-    success = await rag_service.delete_template(
+    success = await get_rag_service().delete_template(
         template_id=template_id,
         user_id=current_user.id
     )
@@ -342,7 +351,7 @@ async def get_ingestion_status(
     """
     Get the status of a document ingestion
     """
-    status = await rag_service.get_ingestion_status(
+    status = await get_rag_service().get_ingestion_status(
         document_id=document_id,
         user_id=current_user.id
     )

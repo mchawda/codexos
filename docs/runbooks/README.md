@@ -1,5 +1,9 @@
 # CodexOS Runbooks
 
+> **📚 Docs ▸ Runbooks**  
+> **Last Updated**: $(date)  
+> **Status**: Active
+
 This directory contains operational runbooks for common tasks and incident response procedures.
 
 ## 📋 Available Runbooks

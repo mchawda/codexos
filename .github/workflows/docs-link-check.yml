@@ -1,0 +1,72 @@
+name: Documentation Link Check
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths: [ 'docs/**', '*.md' ]
+  pull_request:
+    branches: [ main, develop ]
+    paths: [ 'docs/**', '*.md' ]
+  schedule:
+    # Run weekly to catch any broken external links
+    - cron: '0 2 * * 1'
+
+jobs:
+  link-check:
+    name: Check Documentation Links
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          
+      - name: Install lychee
+        run: cargo install lychee --locked
+        
+      - name: Check internal links
+        run: |
+          echo "Checking internal documentation links..."
+          lychee --config .lychee.toml docs/ *.md
+          
+      - name: Check external links (read-only)
+        run: |
+          echo "Checking external links (read-only mode)..."
+          lychee --config .lychee.toml --external docs/ *.md
+          
+      - name: Generate link report
+        run: |
+          echo "Generating link check report..."
+          lychee --config .lychee.toml --output markdown docs/ *.md > link-report.md
+          
+      - name: Upload link report
+        uses: actions/upload-artifact@v3
+        with:
+          name: link-check-report
+          path: link-report.md
+          
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('link-report.md', 'utf8');
+            
+            const comment = `## 🔗 Documentation Link Check Results
+            
+            ${report}
+            
+            ---
+            *This check runs automatically on documentation changes. Fix any broken links before merging.*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

@@ -94,10 +94,7 @@ export default function ChunkList({
     setExpandedGroups(newExpanded);
   };
 
-  const handleDragStart = (e: React.DragEvent, chunk: RAGChunk) => {
-    e.dataTransfer.setData('chunk', JSON.stringify(chunk));
-    e.dataTransfer.effectAllowed = 'copy';
-  };
+
 
   return (
     <div className="flex flex-col h-full">
@@ -230,13 +227,11 @@ export default function ChunkList({
                         {sourceChunks.map((chunk) => (
                           <motion.div
                             key={chunk.id}
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, chunk)}
                             onMouseEnter={() => setHoveredChunk(chunk.id)}
                             onMouseLeave={() => setHoveredChunk(null)}
                             whileHover={{ scale: 1.01 }}
                             className={cn(
-                              'relative p-4 rounded-lg border cursor-move transition-all',
+                              'relative p-4 rounded-lg border cursor-pointer transition-all',
                               selectedChunkIds.has(chunk.id)
                                 ? 'border-primary bg-primary/5'
                                 : 'border-border hover:border-primary/50',

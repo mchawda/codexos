@@ -1,0 +1,62 @@
+# Lychee configuration for CodexOS documentation
+# https://github.com/lycheeverse/lychee
+
+# Base configuration
+base = "https://github.com/codexos/codexos"
+include = ["docs/**/*.md", "*.md"]
+exclude = [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".git/**",
+    "*.lock",
+    "*.log"
+]
+
+# Output format
+output = "markdown"
+format = "detailed"
+
+# HTTP settings
+timeout = 30
+retry_wait_time = 1
+max_retries = 3
+
+# Headers for authentication if needed
+[headers]
+User-Agent = "Mozilla/5.0 (compatible; CodexOS-Docs-LinkChecker/1.0)"
+
+# Skip certain URL patterns
+[exclude_urls]
+# Skip local development URLs
+"http://localhost:*" = "Local development URLs"
+"http://127.0.0.1:*" = "Local development URLs"
+# Skip placeholder URLs
+"https://example.com" = "Example placeholder URLs"
+"https://placeholder.com" = "Example placeholder URLs"
+
+# Accept certain HTTP status codes as valid
+[accept]
+# Accept 401/403 for private repositories
+401 = "Unauthorized (private content)"
+403 = "Forbidden (private content)"
+# Accept 429 for rate limiting
+429 = "Rate limited (temporary)"
+
+# Verbose output for debugging
+verbose = true
+
+# Skip checking certain file types
+[exclude_file_types]
+"*.lock" = "Lock files"
+"*.log" = "Log files"
+"*.tmp" = "Temporary files"
+
+# Custom rules for internal links
+[internal]
+# Allow relative links within the same repository
+allow_relative = true
+# Allow anchor links
+allow_anchors = true
+# Allow mailto links
+allow_mailto = true

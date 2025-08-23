@@ -67,6 +67,13 @@ class User(Base, TimestampMixin):
     # RBAC - moved to many-to-many relationship
     is_superuser = Column(Boolean, default=False)  # Platform super admin
     
+    # Multi-factor Authentication
+    mfa_enabled = Column(Boolean, default=False)
+    mfa_method = Column(String(50))  # totp, sms, email
+    mfa_secret = Column(Text)  # Encrypted TOTP secret
+    mfa_backup_codes = Column(Text)  # Encrypted backup codes
+    phone_number = Column(String(20))  # For SMS MFA
+    
     # Organization relationship
     organization_id = Column(PGUUID(as_uuid=True), nullable=True)
     department = Column(String(255))

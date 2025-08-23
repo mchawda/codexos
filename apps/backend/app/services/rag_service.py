@@ -12,14 +12,28 @@ import chromadb
 
 class RAGService:
     def __init__(self):
-        # Initialize ChromaDB client with new configuration
-        self.client = chromadb.PersistentClient(path="./chroma_db")
+        # Initialize ChromaDB client with external container
+        chroma_host = os.getenv("CHROMA_HOST", "localhost")
+        chroma_port = os.getenv("CHROMA_PORT", "8000")
         
-        # Create or get collection
-        self.collection = self.client.get_or_create_collection(
-            name="codexos_documents",
-            metadata={"hnsw:space": "cosine"}
-        )
+        try:
+            self.client = chromadb.HttpClient(
+                host=chroma_host,
+                port=chroma_port
+            )
+            
+            # Create or get collection
+            self.collection = self.client.get_or_create_collection(
+                name="codexos_documents",
+                metadata={"hnsw:space": "cosine"}
+            )
+        except Exception as e:
+            # Fallback to local client if external connection fails
+            self.client = chromadb.PersistentClient(path="./chroma_db")
+            self.collection = self.client.get_or_create_collection(
+                name="codexos_documents",
+                metadata={"hnsw:space": "cosine"}
+            )
     
     async def ingest_documents(
         self, 

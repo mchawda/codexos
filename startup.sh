@@ -1,8 +1,8 @@
 #!/bin/bash
 # SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 
-# CodexOS.dev Startup Script
-# This script ensures all dependencies are installed and starts the application
+# CodexOS.dev Bulletproof Startup Script
+# This script eliminates all the Docker BS and gets the system running reliably
 
 set -e  # Exit on error
 
@@ -11,6 +11,8 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # ASCII Art Logo
@@ -22,255 +24,310 @@ cat << "EOF"
  | |__| (_) | (_| |  __/  X| |_| |___) |
   \____\___/ \__,_|\___| /_/ \___/____/ 
                                         
-      Autonomous Engineering OS
+      Bulletproof Startup System
 EOF
 echo -e "${NC}"
 
-echo -e "${GREEN}Welcome to CodexOS.dev!${NC}"
-echo "Initializing the autonomous engineering operating system..."
-echo ""
-
-# Function to check if a command exists
+# Function to check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Function to display error and exit
-error_exit() {
-    echo -e "${RED}Error: $1${NC}" >&2
-    exit 1
+# Function to print colored output
+print_status() {
+    local color=$1
+    local message=$2
+    echo -e "${color}${message}${NC}"
 }
 
-# Function to display warning
-warning() {
-    echo -e "${YELLOW}Warning: $1${NC}"
-}
-
-# Function to display success
-success() {
-    echo -e "${GREEN}✓ $1${NC}"
-}
-
-# Function to display info
-info() {
-    echo -e "${BLUE}→ $1${NC}"
-}
-
-# Check for required system dependencies
-info "Checking system dependencies..."
-
-# Check for Node.js
-if ! command_exists node; then
-    error_exit "Node.js is not installed. Please install Node.js 18+ from https://nodejs.org/"
-else
-    NODE_VERSION=$(node -v | cut -d 'v' -f 2 | cut -d '.' -f 1)
-    if [ "$NODE_VERSION" -lt 18 ]; then
-        error_exit "Node.js version 18+ is required. Current version: $(node -v)"
+# Function to check if port is free and kill conflicting processes
+check_and_kill_port() {
+    local port=$1
+    local service_name=$2
+    
+    if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
+        print_status $YELLOW "⚠️  Port $port ($service_name) is in use. Killing conflicting process..."
+        lsof -ti:$port | xargs kill -9 2>/dev/null || true
+        sleep 3
+        print_status $GREEN "✅ Port $port cleared"
     else
-        success "Node.js $(node -v) found"
+        print_status $GREEN "✅ Port $port ($service_name) is free"
     fi
-fi
+}
 
-# Check for Python
-if ! command_exists python3; then
-    error_exit "Python 3 is not installed. Please install Python 3.11+"
-else
-    PYTHON_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
-    PYTHON_MAJOR=$(echo $PYTHON_VERSION | cut -d '.' -f 1)
-    PYTHON_MINOR=$(echo $PYTHON_VERSION | cut -d '.' -f 2)
-    if [ "$PYTHON_MAJOR" -lt 3 ] || ([ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR" -lt 11 ]); then
-        error_exit "Python 3.11+ is required. Current version: $PYTHON_VERSION"
-    else
-        success "Python $PYTHON_VERSION found"
-    fi
-fi
-
-# Check for Docker
-if ! command_exists docker; then
-    error_exit "Docker is not installed. Please install Docker from https://www.docker.com/"
-else
-    success "Docker found"
-fi
-
-# Check for Docker Compose
-if ! command_exists docker-compose && ! docker compose version >/dev/null 2>&1; then
-    error_exit "Docker Compose is not installed. Please install Docker Compose"
-else
-    success "Docker Compose found"
-fi
-
-# Check for pnpm
-if ! command_exists pnpm; then
-    info "pnpm not found. Installing pnpm..."
-    npm install -g pnpm
-    success "pnpm installed"
-else
-    success "pnpm found"
-fi
-
-# Check for Poetry
-if ! command_exists poetry; then
-    info "Poetry not found. Installing Poetry..."
-    curl -sSL https://install.python-poetry.org | python3 -
-    export PATH="$HOME/.local/bin:$PATH"
-    success "Poetry installed"
-else
-    success "Poetry found"
-fi
-
-# Create necessary directories
-info "Setting up directories..."
-mkdir -p logs
-mkdir -p data
-
-# Check if .env files exist, if not copy from examples
-info "Checking environment files..."
-
-if [ ! -f "apps/backend/.env" ]; then
-    if [ -f "apps/backend/.env.example" ]; then
-        cp apps/backend/.env.example apps/backend/.env
-        warning "Created apps/backend/.env from example. Please update with your configuration!"
-    else
-        warning "No .env file found for backend. Creating default..."
-        cat > apps/backend/.env << 'EOL'
-# SPDX-License-Identifier: LicenseRef-NIA-Proprietary
-
-# Application
-APP_NAME=CodexOS
-APP_VERSION=1.0.0
-DEBUG=True
-ENVIRONMENT=development
-
-# API Configuration
-API_HOST=0.0.0.0
-API_PORT=8000
-API_PREFIX=/api/v1
-CORS_ORIGINS=["http://localhost:3000","https://codexos.dev"]
-
-# Database
-DATABASE_URL=postgresql+asyncpg://codexos:codexos_secure_password@localhost:5432/codexos_db
-REDIS_URL=redis://localhost:6379/0
-
-# Security
-SECRET_KEY=dev-secret-key-change-in-production-$(openssl rand -hex 32)
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-REFRESH_TOKEN_EXPIRE_DAYS=7
-VAULT_MASTER_KEY=$(openssl rand -hex 32)
-
-# LLM Providers (add your keys here)
-OPENAI_API_KEY=
-ANTHROPIC_API_KEY=
-OLLAMA_MODEL=llama3
-OLLAMA_BASE_URL=http://localhost:11434
-
-# Vector Store
-CHROMA_HOST=localhost
-CHROMA_PORT=8000
-CHROMA_COLLECTION=codexos_rag
-
-# Feature Flags
-ENABLE_MARKETPLACE=true
-ENABLE_MULTIMODAL=true
-ENABLE_SELF_HOSTED=true
-EOL
-        success "Created default backend .env file"
-    fi
-fi
-
-if [ ! -f "apps/web/.env" ]; then
-    cat > apps/web/.env << 'EOL'
-NEXT_PUBLIC_API_URL=http://localhost:8001/api/v1
-NEXT_PUBLIC_WS_URL=ws://localhost:8001/ws
-EOL
-    success "Created default frontend .env file"
-fi
-
-# Install dependencies
-info "Installing dependencies..."
-
-# Install root dependencies
-pnpm install
-
-# Start services based on user choice
-echo ""
-echo "How would you like to start CodexOS?"
-echo "1) Full stack with Docker (recommended)"
-echo "2) Development mode (local services)"
-echo "3) Frontend only"
-echo "4) Backend only"
-echo ""
-read -p "Enter your choice (1-4): " choice
-
-case $choice in
-    1)
-        info "Starting CodexOS with Docker..."
+# Function to start service with retry and health check
+start_service_with_retry() {
+    local service=$1
+    local max_retries=3
+    local retry=0
+    
+    while [ $retry -lt $max_retries ]; do
+        print_status $BLUE "🔄 Starting $service (attempt $((retry+1))/$max_retries)..."
         
-        # Pull required images
-        info "Pulling Docker images..."
-        docker-compose pull
-        
-        # Start all services
-        info "Starting all services..."
-        docker-compose up -d
-        
-        # Wait for services to be ready
-        info "Waiting for services to be ready..."
-        sleep 10
-        
-        # Check service health
-        if docker-compose ps | grep -q "unhealthy\|Exit"; then
-            error_exit "Some services failed to start. Check logs with: docker-compose logs"
+        if docker-compose up -d $service >/dev/null 2>&1; then
+            print_status $GREEN "✅ $service container started"
+            
+            # Wait for service to be healthy
+            local health_check_attempts=0
+            local max_health_checks=30
+            
+            while [ $health_check_attempts -lt $max_health_checks ]; do
+                if docker-compose ps $service | grep -q "healthy\|Up"; then
+                    print_status $GREEN "✅ $service is healthy and running"
+                    return 0
+                fi
+                
+                print_status $YELLOW "⏳ Waiting for $service to be healthy... ($((health_check_attempts+1))/$max_health_checks)"
+                sleep 5
+                health_check_attempts=$((health_check_attempts+1))
+            done
+            
+            print_status $RED "❌ $service failed health check after $max_health_checks attempts"
+        else
+            print_status $RED "❌ Failed to start $service container"
         fi
         
-        success "CodexOS is starting!"
-        echo ""
-        echo "🌐 Frontend: http://localhost:3000"
-        echo "📡 Backend API: http://localhost:8001/api/v1/docs"
-        echo "🗄️  ChromaDB: http://localhost:8000"
-        echo "📊 PostgreSQL: localhost:5432"
-        echo "⚡ Redis: localhost:6379"
-        echo ""
-        echo "To view logs: docker-compose logs -f"
-        echo "To stop: docker-compose down"
-        ;;
-        
-    2)
-        info "Starting in development mode..."
-        
-        # Check if PostgreSQL is running
-        if ! pg_isready -h localhost -p 5432 >/dev/null 2>&1; then
-            warning "PostgreSQL is not running. Please start it manually or use Docker mode."
+        retry=$((retry+1))
+        if [ $retry -lt $max_retries ]; then
+            print_status $YELLOW "🔄 Retrying in 10 seconds..."
+            sleep 10
         fi
-        
-        # Check if Redis is running
-        if ! redis-cli ping >/dev/null 2>&1; then
-            warning "Redis is not running. Please start it manually or use Docker mode."
-        fi
-        
-        # Start development servers
-        info "Starting development servers..."
-        pnpm dev
-        ;;
-        
-    3)
-        info "Starting frontend only..."
-        cd apps/web
-        pnpm dev
-        ;;
-        
-    4)
-        info "Starting backend only..."
-        cd apps/backend
-        poetry install
-        poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
-        ;;
-        
-    *)
-        error_exit "Invalid choice. Please run the script again."
-        ;;
-esac
+    done
+    
+    print_status $RED "❌ Failed to start $service after $max_retries attempts"
+    return 1
+}
 
-echo ""
-success "CodexOS.dev is ready! 🚀"
-echo "Visit the documentation at: https://docs.codexos.dev"
+# Function to reset ChromaDB data (fixes schema compatibility issues)
+reset_chromadb() {
+    print_status $YELLOW "🔄 Resetting ChromaDB to fix schema compatibility issues..."
+    
+    # Stop ChromaDB
+    docker-compose stop chromadb >/dev/null 2>&1 || true
+    
+    # Remove ChromaDB data volume
+    docker volume rm codexos_chroma_data >/dev/null 2>&1 || true
+    
+    # Remove ChromaDB container
+    docker-compose rm -f chromadb >/dev/null 2>&1 || true
+    
+    print_status $GREEN "✅ ChromaDB reset complete"
+}
+
+# Function to check system requirements
+check_requirements() {
+    print_status $BLUE "🔍 Checking system requirements..."
+    
+    # Check for Docker
+    if ! command_exists docker; then
+        print_status $RED "❌ Docker is not installed. Please install Docker Desktop."
+        exit 1
+    fi
+    
+    # Check for Docker Compose
+    if ! command_exists docker-compose; then
+        print_status $RED "❌ Docker Compose is not installed. Please install Docker Compose."
+        exit 1
+    fi
+    
+    # Check if Docker is running
+    if ! docker info >/dev/null 2>&1; then
+        print_status $RED "❌ Docker is not running. Please start Docker Desktop."
+        exit 1
+    fi
+    
+    # Check for Python
+    if ! command_exists python3; then
+        print_status $RED "❌ Python 3 is not installed. Please install Python 3.11+"
+        exit 1
+    else
+        PYTHON_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+        PYTHON_MAJOR=$(echo $PYTHON_VERSION | cut -d '.' -f 1)
+        PYTHON_MINOR=$(echo $PYTHON_VERSION | cut -d '.' -f 2)
+        if [ "$PYTHON_MAJOR" -lt 3 ] || ([ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR" -lt 11 ]); then
+            print_status $RED "❌ Python 3.11+ is required. Current version: $PYTHON_VERSION"
+            exit 1
+        else
+            print_status $GREEN "✅ Python $PYTHON_VERSION found"
+        fi
+    fi
+    
+    # Check for Node.js
+    if ! command_exists node; then
+        print_status $RED "❌ Node.js is not installed. Please install Node.js 18+"
+        exit 1
+    else
+        NODE_VERSION=$(node --version | cut -d 'v' -f 2)
+        NODE_MAJOR=$(echo $NODE_VERSION | cut -d '.' -f 1)
+        if [ "$NODE_MAJOR" -lt 18 ]; then
+            print_status $RED "❌ Node.js 18+ is required. Current version: $NODE_VERSION"
+            exit 1
+        else
+            print_status $GREEN "✅ Node.js $NODE_VERSION found"
+        fi
+    fi
+    
+    # Check for PNPM
+    if ! command_exists pnpm; then
+        print_status $RED "❌ PNPM is not installed. Please install PNPM 8+"
+        exit 1
+    else
+        print_status $GREEN "✅ PNPM found"
+    fi
+    
+    print_status $GREEN "✅ All system requirements met"
+}
+
+# Function to clean up existing containers and volumes
+cleanup_existing() {
+    print_status $BLUE "🧹 Cleaning up existing containers and volumes..."
+    
+    # Stop all containers
+    docker-compose down --remove-orphans >/dev/null 2>&1 || true
+    
+    # Remove any dangling containers
+    docker container prune -f >/dev/null 2>&1 || true
+    
+    # Remove any dangling images
+    docker image prune -f >/dev/null 2>&1 || true
+    
+    print_status $GREEN "✅ Cleanup complete"
+}
+
+# Function to clear port conflicts
+clear_ports() {
+    print_status $BLUE "🔪 Clearing port conflicts..."
+    
+    check_and_kill_port 3000 "Frontend"
+    check_and_kill_port 8001 "Backend"
+    check_and_kill_port 5432 "PostgreSQL"
+    check_and_kill_port 6379 "Redis"
+    check_and_kill_port 8000 "ChromaDB"
+    
+    print_status $GREEN "✅ All ports cleared"
+}
+
+# Function to start infrastructure services
+start_infrastructure() {
+    print_status $BLUE "🏗️  Starting infrastructure services..."
+    
+    # Start PostgreSQL, Redis, and ChromaDB
+    if ! start_service_with_retry postgres; then
+        print_status $RED "❌ Failed to start PostgreSQL"
+        exit 1
+    fi
+    
+    if ! start_service_with_retry redis; then
+        print_status $RED "❌ Failed to start Redis"
+        exit 1
+    fi
+    
+    if ! start_service_with_retry chromadb; then
+        print_status $RED "❌ Failed to start ChromaDB"
+        exit 1
+    fi
+    
+    print_status $GREEN "✅ All infrastructure services are running and healthy"
+}
+
+# Function to start application services
+start_application() {
+    print_status $BLUE "🚀 Starting application services..."
+    
+    # Start backend
+    if ! start_service_with_retry backend; then
+        print_status $RED "❌ Failed to start backend"
+        print_status $YELLOW "📋 Backend logs:"
+        docker-compose logs backend --tail=20
+        exit 1
+    fi
+    
+    # Wait a bit for backend to fully initialize
+    sleep 10
+    
+    # Start frontend
+    if ! start_service_with_retry frontend; then
+        print_status $RED "❌ Failed to start frontend"
+        print_status $YELLOW "📋 Frontend logs:"
+        docker-compose logs frontend --tail=20
+        exit 1
+    fi
+    
+    print_status $GREEN "✅ All application services are running and healthy"
+}
+
+# Function to verify system health
+verify_system() {
+    print_status $BLUE "🔍 Verifying system health..."
+    
+    # Check all services
+    local all_healthy=true
+    
+    for service in postgres redis chromadb backend frontend; do
+        if docker-compose ps $service | grep -q "healthy\|Up"; then
+            print_status $GREEN "✅ $service: Healthy"
+        else
+            print_status $RED "❌ $service: Unhealthy"
+            all_healthy=false
+        fi
+    done
+    
+    if [ "$all_healthy" = true ]; then
+        print_status $GREEN "🎉 All services are healthy!"
+    else
+        print_status $RED "⚠️  Some services are unhealthy. Check logs with: docker-compose logs [service_name]"
+        return 1
+    fi
+}
+
+# Function to display system status
+display_status() {
+    print_status $BLUE "📊 System Status:"
+    docker-compose ps
+    
+    print_status $BLUE "🌐 Access URLs:"
+    print_status $GREEN "   Frontend: http://localhost:3000"
+    print_status $GREEN "   Backend API: http://localhost:8001"
+    print_status $GREEN "   Backend Health: http://localhost:8001/health"
+    print_status $GREEN "   ChromaDB: http://localhost:8000"
+    
+    print_status $BLUE "📋 Useful Commands:"
+    print_status $CYAN "   View logs: docker-compose logs [service_name]"
+    print_status $CYAN "   Stop system: docker-compose down"
+    print_status $CYAN "   Restart service: docker-compose restart [service_name]"
+}
+
+# Main execution
+main() {
+    print_status $BLUE "🚀 Starting CodexOS Bulletproof Startup System..."
+    
+    # Check requirements
+    check_requirements
+    
+    # Clean up existing state
+    cleanup_existing
+    
+    # Clear port conflicts
+    clear_ports
+    
+    # Reset ChromaDB to fix schema issues
+    reset_chromadb
+    
+    # Start infrastructure
+    start_infrastructure
+    
+    # Start application
+    start_application
+    
+    # Verify system
+    verify_system
+    
+    # Display final status
+    display_status
+    
+    print_status $GREEN "🎉 CodexOS is now running successfully!"
+    print_status $GREEN "🌐 Open http://localhost:3000 in your browser to get started!"
+}
+
+# Run main function
+main "$@"

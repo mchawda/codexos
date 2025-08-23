@@ -1,79 +1,111 @@
 # CodexOS Documentation
 
-Welcome to the CodexOS documentation! This comprehensive guide will help you understand, build, and deploy autonomous AI agents using our platform.
+> **📚 Docs ▸ Documentation Overview**  
+> **Last Updated**: $(date)  
+> **Status**: Active
 
-## 📚 Documentation Structure
+Welcome to the CodexOS documentation! This directory contains comprehensive guides, references, and operational procedures for the CodexOS platform.
 
-### Getting Started
-- [Introduction](./introduction.md) - Overview of CodexOS and its capabilities
-- [Quick Start Guide](./quickstart.md) - Get up and running in 5 minutes
-- [Installation](./installation.md) - Detailed installation instructions
-- [Your First Agent](./first-agent.md) - Build your first AI agent step-by-step
+## 📚 Documentation Overview
 
-### Core Concepts
-- [Agent Architecture](./concepts/agents.md) - Understanding how agents work
-- [Visual Flow Editor](./concepts/flow-editor.md) - Building workflows visually
-- [Node Types](./concepts/nodes.md) - Available node types and their uses
-- [Execution Model](./concepts/execution.md) - How agents execute and manage state
+### 🚀 Getting Started
+- **[Quickstart Guide](quickstart.md)** - Get CodexOS up and running in minutes
+- **[Installation Guide](installation.md)** - Detailed setup instructions
+- **[Configuration Guide](configuration.md)** - Environment and system configuration
 
-### Features
-- [RAG Engine](./features/rag-engine.md) - Retrieval-Augmented Generation system
-- [Vault System](./features/vault.md) - Secure credential management
-- [Marketplace](./features/marketplace.md) - Sharing and monetizing agents
-- [Multimodal Capabilities](./features/multimodal.md) - Vision, voice, and action nodes
+### 🏗️ Architecture & Design
+- **[System Architecture](architecture.md)** - High-level system design and components
+- **[API Reference](api/README.md)** - Complete API documentation and examples
+- **[Database Schema](database-schema.md)** - Database design and relationships
 
-### API Reference
-- [REST API](./api/rest.md) - RESTful API endpoints
-- [GraphQL API](./api/graphql.md) - GraphQL schema and queries
-- [WebSocket Events](./api/websocket.md) - Real-time communication
-- [SDK Reference](./api/sdk.md) - Python and JavaScript SDKs
+### 🔧 Operations & Maintenance
+- **[Runbooks](runbooks/README.md)** - Operational procedures and incident response
+  - [Database Maintenance](runbooks/database-maintenance.md)
+  - [Monitoring & Alerting](runbooks/monitoring-alerting.md)
+  - [Deployment Procedures](runbooks/deployment.md)
+  - [Backup & Recovery](runbooks/backup-recovery.md)
+  - [Security Incidents](runbooks/security-incidents.md)
+  - [Service Outages](runbooks/service-outages.md)
+  - [Performance Issues](runbooks/performance-issues.md)
+  - [Data Loss](runbooks/data-loss.md)
+  - [System Updates](runbooks/system-updates.md)
+  - [Certificate Management](runbooks/certificate-management.md)
+  - [Log Management](runbooks/log-management.md)
+  - [Resource Scaling](runbooks/resource-scaling.md)
 
-### Deployment
-- [Cloud Deployment](./deployment/cloud.md) - Deploying to CodexOS cloud
-- [Self-Hosted](./deployment/self-hosted.md) - Running on your infrastructure
-- [Docker & Kubernetes](./deployment/docker.md) - Container deployment
-- [Environment Configuration](./deployment/configuration.md) - Config options
+### 🛡️ Security & Compliance
+- **[Security Policy](security.md)** - Security guidelines and policies
+- **[Threat Model](threat-model.md)** - Security threat analysis and mitigation
+- **[RBAC Guide](rbac.md)** - Role-based access control implementation
+- **[Compliance](compliance.md)** - SOC2, GDPR, and other compliance standards
 
-### Security & Compliance
-- [Security Overview](./security/overview.md) - Security architecture
-- [Authentication](./security/authentication.md) - Auth methods and SSO
-- [Compliance](./security/compliance.md) - SOC2, ISO 27001, and more
-- [Best Practices](./security/best-practices.md) - Security recommendations
+### 👥 User Guides
+- **[User Manual](user-manual.md)** - End-user features and workflows
+- **[Admin Guide](admin-guide.md)** - Administrative tasks and user management
+- **[Developer Guide](developer-guide.md)** - Development setup and contribution
 
-### Guides & Tutorials
-- [Building a Code Review Agent](./guides/code-review-agent.md)
-- [Creating a Documentation Bot](./guides/documentation-bot.md)
-- [Multi-Agent Workflows](./guides/multi-agent-workflows.md)
-- [Custom Tool Development](./guides/custom-tools.md)
+### 📊 Monitoring & Troubleshooting
+- **[Troubleshooting](troubleshooting.md)** - Common issues and solutions
+- **[Performance Tuning](performance-tuning.md)** - Optimization and scaling
+- **[Debugging](debugging.md)** - Debug tools and techniques
 
-## 🚀 Quick Links
+### 🚀 Deployment & Operations
+- **[Production Deployment](deployment-guide.md)** - Production environment setup
+- **[CI/CD Pipeline](ci-cd.md)** - Continuous integration and deployment
+- **[Infrastructure](infrastructure.md)** - Infrastructure as code and management
 
-- **[API Playground](https://api.codexos.dev/playground)** - Test API endpoints
-- **[GitHub Repository](https://github.com/codexos/codexos)** - Source code
-- **[Discord Community](https://discord.gg/codexos)** - Get help and share
-- **[Status Page](https://status.codexos.dev)** - Service status
+## 🔗 Quick Navigation
 
-## 💡 Getting Help
+### Popular Pages
+- **[Quickstart](quickstart.md)** - Get started in 5 minutes
+- **[API Reference](api/README.md)** - Complete API documentation
+- **[Runbooks](runbooks/README.md)** - Operational procedures
+- **[Security](security.md)** - Security policies and procedures
 
-- **Documentation**: You're here!
-- **Community Forum**: [community.codexos.dev](https://community.codexos.dev)
-- **Discord**: [discord.gg/codexos](https://discord.gg/codexos)
-- **Email Support**: support@codexos.dev
-- **Enterprise Support**: enterprise@codexos.dev
+### Related Documentation
+- **[Main README](../README.md)** - Project overview and getting started
+- **[Contributing](../CONTRIBUTING.md)** - How to contribute to CodexOS
+- **[Changelog](../CHANGELOG.md)** - Release notes and updates
 
-## 🤝 Contributing
+## 📋 Documentation Standards
 
-We welcome contributions to our documentation! If you find errors or have suggestions:
+### Writing Guidelines
+- **Clear and Concise**: Use simple, direct language
+- **Code Examples**: Include working code snippets
+- **Screenshots**: Add visual aids where helpful
+- **Cross-references**: Link to related documentation
 
-1. Fork the [documentation repository](https://github.com/codexos/docs)
-2. Make your changes
-3. Submit a pull request
+### Maintenance
+- **Regular Updates**: Review and update monthly
+- **Version Control**: Track changes with git
+- **Link Validation**: Automated link checking in CI
+- **Feedback Loop**: Collect and incorporate user feedback
 
-## 📄 License
+## 🔍 Search & Discovery
 
-Copyright © 2024 CodexOS. All rights reserved.
+### Finding Information
+- **Table of Contents**: Each page includes a TOC
+- **Cross-linking**: Related pages are linked throughout
+- **Search**: Use your browser's search function (Ctrl+F/Cmd+F)
+- **Tags**: Pages are tagged with relevant categories
+
+### Navigation Patterns
+- **Breadcrumbs**: Clear path to current location
+- **Related Links**: Discover related content
+- **Previous/Next**: Sequential navigation where applicable
+
+## 📞 Support & Feedback
+
+### Getting Help
+- **Documentation Issues**: [GitHub Issues](https://github.com/codexos/codexos/issues)
+- **Questions**: [Discord Community](https://discord.gg/codexos)
+- **Email**: docs@codexos.dev
+
+### Contributing
+- **Improvements**: Submit pull requests
+- **New Content**: Follow the contribution guidelines
+- **Feedback**: Share your experience and suggestions
 
 ---
 
-*Last updated: [Current Date]*
-*Version: 1.0.0*
+*This documentation is actively maintained. Found an issue? [Report it](https://github.com/codexos/codexos/issues) or [contribute a fix](../CONTRIBUTING.md).*

@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     curl \
+    build-essential \
+    pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
@@ -17,8 +19,7 @@ COPY pyproject.toml poetry.lock* ./
 
 # Install dependencies
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi || \
-    (poetry lock --no-update && poetry install --no-interaction --no-ansi)
+    && poetry install --no-interaction --no-ansi --no-root
 
 # Copy application code
 COPY . .

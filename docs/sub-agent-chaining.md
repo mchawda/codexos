@@ -1,4 +1,8 @@
-# Sub-Agent Chaining in CodexOS
+# CodexOS Sub-Agent Chaining
+
+> **📚 Docs ▸ Architecture & Design**  
+> **Last Updated**: $(date)  
+> **Status**: Active
 
 ## Overview
 

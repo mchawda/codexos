@@ -1,4 +1,8 @@
-# CodexOS Production Deployment Guide
+# CodexOS Production Deployment
+
+> **📚 Docs ▸ Deployment & Operations**  
+> **Last Updated**: $(date)  
+> **Status**: Active
 
 ## Overview
 
@@ -383,3 +387,17 @@ For production support:
 - Issues: https://github.com/codexos/codexos/issues
 - Security: security@codexos.dev
 - Enterprise: enterprise@codexos.dev
+
+## 🔗 Related Documentation
+
+- **[Architecture](architecture.md)** - System design overview
+- **[Security](security.md)** - Security policies and hardening
+- **[Threat Model](threat-model.md)** - Security threat analysis
+- **[RBAC Guide](rbac.md)** - Access control implementation
+- **[Tenancy](tenancy.md)** - Multi-tenant setup
+- **[Runbooks](runbooks/README.md)** - Operational procedures
+  - [Deployment Procedures](runbooks/deployment.md)
+  - [Monitoring & Alerting](runbooks/monitoring-alerting.md)
+  - [Backup & Recovery](runbooks/backup-recovery.md)
+  - [Security Incidents](runbooks/security-incidents.md)
+- **[API Reference](api/README.md)** - API documentation

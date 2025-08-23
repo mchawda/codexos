@@ -1,4 +1,8 @@
-# CodexOS Architecture
+# CodexOS System Architecture
+
+> **📚 Docs ▸ Architecture & Design**  
+> **Last Updated**: $(date)  
+> **Status**: Active
 
 ## Overview
 
@@ -268,3 +272,14 @@ Query Input → Embedding Generation → Vector Search → Context Retrieval →
 - **Quantum Computing**: Advanced optimization algorithms
 - **Blockchain Integration**: Decentralized identity and trust
 - **AI Governance**: Ethical AI and compliance frameworks
+
+## 🔗 Related Documentation
+
+- **[Quickstart Guide](quickstart.md)** - Get started with CodexOS
+- **[Security Policy](security.md)** - Security architecture and policies
+- **[Threat Model](threat-model.md)** - Security threat analysis
+- **[RBAC Guide](rbac.md)** - Access control implementation
+- **[Tenancy](tenancy.md)** - Multi-tenant architecture details
+- **[Sub-Agent Chaining](sub-agent-chaining.md)** - Agent orchestration patterns
+- **[Production Deployment](production.md)** - Production architecture setup
+- **[API Reference](api/README.md)** - API architecture and endpoints

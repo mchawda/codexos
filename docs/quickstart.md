@@ -1,4 +1,8 @@
-# Quick Start Guide
+# CodexOS Quickstart Guide
+
+> **📚 Docs ▸ Getting Started**  
+> **Last Updated**: $(date)  
+> **Status**: Active
 
 Get up and running with CodexOS in under 5 minutes! This guide will walk you through creating your first autonomous AI agent.
 
@@ -261,3 +265,13 @@ python --version  # Should be 3.11+
 ---
 
 **Congratulations!** 🎉 You've created and deployed your first CodexOS agent. The possibilities are endless from here!
+
+## 🔗 Related Documentation
+
+- **[Installation Guide](installation.md)** - Detailed setup instructions
+- **[Configuration Guide](configuration.md)** - Environment configuration
+- **[Architecture](architecture.md)** - System design overview
+- **[API Reference](api/README.md)** - API documentation
+- **[Security](security.md)** - Security setup and policies
+- **[Production Deployment](production.md)** - Production deployment guide
+- **[Runbooks](runbooks/README.md)** - Operational procedures

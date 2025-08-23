@@ -2,7 +2,7 @@
 """Configuration settings for CodexOS Backend"""
 
 from functools import lru_cache
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: List[str] = ["http://localhost:3000"]
 
     @field_validator("CORS_ORIGINS", mode="before")
-    def assemble_cors_origins(cls, v: str | List[str]) -> List[str]:
+    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
         if isinstance(v, str):
             return [i.strip() for i in v.split(",")]
         return v

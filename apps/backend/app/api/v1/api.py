@@ -3,7 +3,7 @@
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, users, agents, rag, vault, marketplace, stripe
+from app.api.v1.endpoints import auth, users, agents, rag, vault, marketplace, stripe, mfa
 
 api_router = APIRouter()
 
@@ -15,3 +15,4 @@ api_router.include_router(rag.router, prefix="/rag", tags=["rag"])
 api_router.include_router(vault.router, prefix="/vault", tags=["vault"])
 api_router.include_router(marketplace.router, prefix="/marketplace", tags=["marketplace"])
 api_router.include_router(stripe.router, prefix="/stripe", tags=["payments"])
+api_router.include_router(mfa.router, prefix="/mfa", tags=["mfa"])

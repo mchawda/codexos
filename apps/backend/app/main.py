@@ -15,11 +15,12 @@ from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from app.api.v1.api import api_router
 from app.core.config import settings
-from app.core.monitoring import init_sentry, MetricsMiddleware, metrics_endpoint
 from app.core.health import get_health_status
 from app.db.init_db import init_db
 from app.db.session import engine
 from app.websocket.manager import manager
+from app.services.monitoring_service import monitoring_service
+# from app.services.performance_service import performance_service
 
 
 @asynccontextmanager
@@ -32,17 +33,15 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await init_db(conn)
     
-    # Initialize Sentry if configured
-    if settings.SENTRY_DSN:
-        sentry_sdk.init(
-            dsn=settings.SENTRY_DSN,
-            integrations=[
-                FastApiIntegration(transaction_style="endpoint"),
-                SqlalchemyIntegration(),
-            ],
-            traces_sample_rate=0.1,
-            environment=settings.ENVIRONMENT,
-        )
+    # Initialize monitoring and instrumentation
+    monitoring_service.instrument_database(engine)
+    monitoring_service.instrument_http_client()
+    monitoring_service.instrument_redis()
+    
+    # Set the database engine in the performance service
+    # performance_service.set_database_engine(engine)
+    
+    print("✅ Monitoring and performance optimization initialized")
     
     yield
     
@@ -71,7 +70,6 @@ app.add_middleware(
 )
 
 app.add_middleware(GZipMiddleware, minimum_size=1000)
-app.add_middleware(MetricsMiddleware)
 
 if settings.ENVIRONMENT == "production":
     app.add_middleware(
@@ -81,6 +79,9 @@ if settings.ENVIRONMENT == "production":
 
 # Include API router
 app.include_router(api_router, prefix=settings.API_PREFIX)
+
+# Instrument the FastAPI app for monitoring
+monitoring_service.instrument_app(app)
 
 # WebSocket endpoint
 @app.websocket("/ws/{client_id}")

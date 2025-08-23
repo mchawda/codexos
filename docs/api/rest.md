@@ -1,5 +1,10 @@
 # REST API Reference
 
+> **📚 Docs ▸ API Reference**  
+> **Last Updated**: $(date)  
+> **Status**: Active
+
+
 The CodexOS REST API provides programmatic access to all platform features. This reference covers authentication, endpoints, and examples.
 
 ## Base URL

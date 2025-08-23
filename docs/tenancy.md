@@ -1,4 +1,8 @@
-# CodexOS Multi-Tenancy
+# CodexOS Multi-Tenancy Guide
+
+> **📚 Docs ▸ Architecture & Design**  
+> **Last Updated**: $(date)  
+> **Status**: Active
 
 ## Overview
 
