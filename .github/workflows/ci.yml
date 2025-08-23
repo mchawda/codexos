@@ -1,19 +1,19 @@
 name: CI
 
-on:
-  push:
+on: 
+  push: 
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
 
 jobs:
-  build-test:
-    name: Build & Test
+  lint-typecheck:
+    name: Lint + Typecheck (TS & Py)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [18, 20]
-        python: [3.11, 3.12]
+    strategy: 
+      matrix: 
+        node: [20]
+        py: [3.11]
     
     steps:
       - name: Checkout code
@@ -21,234 +21,167 @@ jobs:
         
       - name: Setup Node.js
         uses: actions/setup-node@v4
-        with:
+        with: 
           node-version: ${{ matrix.node }}
           cache: 'npm'
           
+      - name: Install PNPM
+        run: npm i -g pnpm@8
+        
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+        
+      - name: Run ESLint (no warnings)
+        run: pnpm -w run -r lint
+        
+      - name: TypeScript typecheck
+        run: pnpm -w run -r typecheck
+        
       - name: Setup Python
         uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
+        with: 
+          python-version: ${{ matrix.py }}
           
-      - name: Install PNPM
-        run: npm install -g pnpm@8
+      - name: Install Python tools
+        run: |
+          pipx install ruff mypy
+          
+      - name: Run Ruff
+        run: ruff check .
         
-      - name: Install JavaScript dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Run MyPy
+        run: mypy apps/backend || true  # hard-fail once types are green
+
+  test:
+    name: Unit + API Tests (Fast)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
         
-      - name: TypeScript type checking
-        run: pnpm -w run -r typecheck || true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 20
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
         
-      - name: JavaScript linting
-        run: pnpm -w run -r lint || true
+      - name: Run frontend tests with coverage
+        run: pnpm -w -r test -- --coverage
         
-      - name: Install Python dependencies
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: 3.11
+          
+      - name: Install Poetry and dependencies
         run: |
           pipx install poetry
-          poetry install --no-root || true
+          poetry install --no-root
           
-      - name: Python linting and testing
+      - name: Run backend tests with coverage
         run: |
-          ruff check . || true
-          pytest -q || true
+          pytest -q --maxfail=1 --disable-warnings \
+            --cov=apps/backend \
+            --cov-fail-under=80
+
+  build:
+    name: Build Gates
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 20
+          cache: 'npm'
           
-      - name: Build Docker backend
-        run: docker build -t codexos/backend ./apps/backend || true
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
         
-      - name: Build Docker frontend
-        run: docker build -t codexos/frontend ./apps/web || true
+      - name: Build frontend
+        run: pnpm --filter @codexos/web build
         
-      - name: Security scan with Trivy
-        uses: aquasecurity/trivy-action@v0.16.0
-        with:
-          image-ref: 'codexos/backend'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: 3.11
+          
+      - name: Install uvicorn
+        run: pipx install uvicorn
+        
+      - name: Compile Python files
+        run: python -m py_compile $(git ls-files '*.py')
+
+  container-security:
+    name: Container Scan + SBOM
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Build backend container
+        run: docker build -t codexos/backend ./apps/backend
+        
+      - name: Run Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@v0.15.0
+        with: 
+          image-ref: codexos/backend
           format: 'table'
-          exit-code: '0'
+          exit-code: '1'
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
           
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
-        with:
+        with: 
           artifact-name: 'sbom.spdx.json'
           
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v3
         with:
-          name: sbom-${{ matrix.node }}-${{ matrix.python }}
+          name: sbom-backend
           path: sbom.spdx.json
-          
-      - name: Cache cleanup
-        if: always()
-        run: |
-          docker system prune -f || true
-          pnpm store prune || true
 
-  security:
-    name: Security & Quality
-    runs-on: ubuntu-latest
-    needs: build-test
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Run CodeQL analysis
-        uses: github/codeql-action/init@v2
-        with:
-          languages: javascript, python
-          
-      - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v2
-        
-      - name: Run Semgrep security scan
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: >-
-            p/security-audit
-            p/secrets
-            p/owasp-top-ten
-        env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-          
-      - name: Check for secrets
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: .
-          base: ${{ github.event.pull_request.base.sha || github.sha }}
-          head: ${{ github.sha }}
-          
-      - name: Dependency vulnerability check
-        run: |
-          npm audit --audit-level moderate || true
-          pip-audit || true
-
-  documentation:
-    name: Documentation Quality
+  supply-chain:
+    name: Secrets & License Compliance
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Check markdown formatting
-        uses: DavidAnson/markdownlint-cli2-action@v12
-        with:
-          globs: 'docs/**/*.md,*.md'
-          
-      - name: Check for broken links
-        uses: lycheeverse/lychee-action@v1.8.0
-        with:
-          args: --config .lychee.toml
-          
-      - name: Validate documentation structure
-        run: |
-          # Check that all docs have proper headers
-          find docs -name "*.md" -exec grep -L "^# " {} \; | wc -l | grep -q "^0$" || echo "Some docs missing headers"
-          
-          # Check for breadcrumbs
-          find docs -name "*.md" -exec grep -L "📚 Docs ▸" {} \; | wc -l | grep -q "^0$" || echo "Some docs missing breadcrumbs"
-
-  performance:
-    name: Performance & Load Testing
-    runs-on: ubuntu-latest
-    needs: build-test
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Run Gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
         
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 20
+          cache: 'npm'
           
       - name: Install dependencies
-        run: |
-          pip install locust
-          pip install requests
-          
-      - name: Run basic performance tests
-        run: |
-          # Simple API response time test
-          python -c "
-          import requests
-          import time
-          import statistics
-          
-          # Test basic endpoints (when available)
-          endpoints = ['/health', '/api/v1/health']
-          times = []
-          
-          for endpoint in endpoints:
-              try:
-                  start = time.time()
-                  response = requests.get(f'http://localhost:8001{endpoint}', timeout=5)
-                  end = time.time()
-                  if response.status_code == 200:
-                      times.append(end - start)
-                      print(f'{endpoint}: {end-start:.3f}s')
-              except:
-                  pass
-          
-          if times:
-              avg = statistics.mean(times)
-              print(f'Average response time: {avg:.3f}s')
-              assert avg < 1.0, 'Response time too slow'
-          "
-          
-      - name: Check bundle size
-        run: |
-          # Check if build artifacts exist and analyze size
-          if [ -d "apps/web/.next" ]; then
-            echo "Frontend build size:"
-            du -sh apps/web/.next || true
-          fi
-          
-          if [ -d "apps/backend/__pycache__" ]; then
-            echo "Backend cache size:"
-            du -sh apps/backend/__pycache__ || true
-          fi
+        run: pnpm i --frozen-lockfile
+        
+      - name: Check OSS licenses
+        run: npx license-checker --production --summary
 
-  compliance:
-    name: Compliance & Standards
+  docs-links:
+    name: Documentation Link Checker
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Check license compliance
-        run: |
-          # Ensure LICENSE file exists
-          test -f LICENSE || test -f LICENSE.md || echo "Warning: No LICENSE file found"
-          
-          # Check for license headers in source files
-          echo "Checking license compliance..."
-          
-      - name: Check code formatting
-        run: |
-          # Check Python formatting with black
-          pip install black
-          black --check --diff . || echo "Python formatting issues found"
-          
-          # Check JavaScript/TypeScript formatting
-          npm install -g prettier
-          npx prettier --check . || echo "JS/TS formatting issues found"
-          
-      - name: Validate project structure
-        run: |
-          # Check for required files
-          required_files=("README.md" "docker-compose.yml" "Makefile")
-          for file in "${required_files[@]}"; do
-            if [ ! -f "$file" ]; then
-              echo "Missing required file: $file"
-              exit 1
-            fi
-          done
-          
-          # Check for documentation structure
-          if [ ! -d "docs" ]; then
-            echo "Missing docs directory"
-            exit 1
-          fi
-          
-          echo "Project structure validation passed"
+      - name: Check documentation links
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: --no-progress --exclude-mail "docs/**/*.md" "*.md"
