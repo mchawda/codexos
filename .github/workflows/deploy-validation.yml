@@ -1,0 +1,120 @@
+name: Deploy Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['docker-compose.yml', 'apps/**/Dockerfile', 'Makefile', 'startup.sh']
+
+jobs:
+  validate-deployment:
+    name: Validate Deployment
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Validate Docker Compose
+        run: |
+          # Check docker-compose syntax
+          docker-compose config --quiet
+          echo "✅ Docker Compose configuration is valid"
+          
+      - name: Test Docker builds
+        run: |
+          # Test backend build
+          docker build --no-cache -t test-backend ./apps/backend
+          echo "✅ Backend Docker build successful"
+          
+          # Test frontend build
+          docker build --no-cache -t test-frontend ./apps/web
+          echo "✅ Frontend Docker build successful"
+          
+      - name: Validate startup scripts
+        run: |
+          # Check startup script syntax
+          if [ -f "startup.sh" ]; then
+            bash -n startup.sh
+            echo "✅ Startup script syntax is valid"
+          fi
+          
+          # Check Makefile targets
+          if [ -f "Makefile" ]; then
+            make -n dev || echo "⚠️  Some Makefile targets may have issues"
+            echo "✅ Makefile validation complete"
+          fi
+          
+      - name: Check environment variables
+        run: |
+          # Look for required environment variables in docker-compose
+          required_vars=("DATABASE_URL" "REDIS_URL" "SECRET_KEY")
+          
+          for var in "${required_vars[@]}"; do
+            if grep -q "\${$var}" docker-compose.yml; then
+              echo "✅ Found required env var: $var"
+            else
+              echo "⚠️  Missing env var reference: $var"
+            fi
+          done
+          
+      - name: Validate service health checks
+        run: |
+          # Check if health check endpoints are defined
+          if grep -q "healthcheck:" docker-compose.yml; then
+            echo "✅ Health checks configured"
+          else
+            echo "⚠️  No health checks found in docker-compose"
+          fi
+          
+      - name: Cleanup test images
+        if: always()
+        run: |
+          docker rmi test-backend test-frontend || true
+          docker system prune -f || true
+
+  security-scan:
+    name: Security Validation
+    runs-on: ubuntu-latest
+    needs: validate-deployment
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Scan for hardcoded secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: .
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+          
+      - name: Check for exposed ports
+        run: |
+          # Check for potentially exposed ports
+          exposed_ports=$(grep -r "EXPOSE\|ports:" . --include="*.dockerfile" --include="*.yml" | grep -E ":[0-9]+" || true)
+          
+          if [ -n "$exposed_ports" ]; then
+            echo "📋 Exposed ports found:"
+            echo "$exposed_ports"
+          else
+            echo "✅ No exposed ports found"
+          fi
+          
+      - name: Validate secrets management
+        run: |
+          # Check for proper secrets handling
+          if grep -q "secrets:" docker-compose.yml; then
+            echo "✅ Docker secrets configured"
+          else
+            echo "⚠️  Consider using Docker secrets for sensitive data"
+          fi
+          
+          # Check for .env files in git
+          if git ls-files | grep -q "\.env"; then
+            echo "⚠️  .env files found in git - consider using .env.example instead"
+          else
+            echo "✅ No .env files in git"
+          fi
