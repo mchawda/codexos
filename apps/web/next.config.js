@@ -16,8 +16,24 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline';",
   },
   
-  // Security headers
+  // Security headers (relaxed for development)
   async headers() {
+    const isDev = process.env.NODE_ENV === 'development';
+    
+    if (isDev) {
+      // Minimal headers for development to avoid CSS MIME issues
+      return [
+        {
+          source: "/(.*)",
+          headers: [
+            { key: "X-Frame-Options", value: "SAMEORIGIN" },
+            { key: "X-Content-Type-Options", value: "nosniff" },
+          ],
+        },
+      ];
+    }
+    
+    // Full security headers for production
     return [
       {
         source: "/(.*)",

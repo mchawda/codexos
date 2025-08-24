@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: LicenseRef-NIA-Proprietary
 "use client"
 
 import * as React from "react"

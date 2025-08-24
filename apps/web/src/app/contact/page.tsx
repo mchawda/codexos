@@ -30,7 +30,7 @@ const contactMethods = [
     icon: MessageSquare,
     title: 'Live Chat',
     description: 'Chat with our support team',
-    contact: 'Available 9am-6pm PST',
+    contact: 'Available 9am-6pm SGT',
     action: 'Start Chat',
   },
   {
@@ -273,9 +273,9 @@ export default function ContactPage() {
                   <div>
                     <h4 className="font-semibold mb-1">Headquarters</h4>
                     <p className="text-muted-foreground">
-                      123 AI Street, Suite 400<br />
-                      San Francisco, CA 94105<br />
-                      United States
+                      68 Circular Road<br />
+                      049422<br />
+                      Singapore
                     </p>
                   </div>
                 </div>
@@ -284,7 +284,7 @@ export default function ContactPage() {
                   <div>
                     <h4 className="font-semibold mb-1">Office Hours</h4>
                     <p className="text-muted-foreground">
-                      Monday - Friday: 9:00 AM - 6:00 PM PST<br />
+                      Monday - Friday: 9:00 AM - 6:00 PM SGT<br />
                       Saturday - Sunday: Closed
                     </p>
                   </div>
@@ -325,7 +325,7 @@ export default function ContactPage() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-violet-600/10 to-purple-600/10" />
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0977551707394!2d-122.39320668468184!3d37.78779817975622!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085807f3e3a3b3b%3A0x3b3b3b3b3b3b3b3b!2sSan%20Francisco%2C%20CA!5e0!3m2!1sen!2sus!4v1234567890"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1994.0345555555555!2d103.8498652!3d1.2820411!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da1910c7c59b81%3A0xa8c5e51877cb1408!2s68%20Circular%20Rd%2C%20Singapore%20049422!5e0!3m2!1sen!2ssg!4v1737745800000"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

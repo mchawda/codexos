@@ -291,8 +291,8 @@ export default function PrivacyPolicyPage() {
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <p className="font-semibold mb-2">CodexOS Privacy Team</p>
                 <p className="text-white/80">Email: privacy@codexos.dev</p>
-                <p className="text-white/80">Address: 123 AI Street, Suite 400</p>
-                <p className="text-white/80">San Francisco, CA 94105</p>
+                <p className="text-white/80">Address: 68 Circular Road</p>
+                <p className="text-white/80">049422 Singapore</p>
               </div>
             </motion.div>
           </div>
