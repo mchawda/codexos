@@ -105,6 +105,8 @@ import {
 import { RAGComposer } from '@/components/dashboard/rag-composer';
 import type { ContextBasketItem } from '@/components/dashboard/rag-composer/types';
 import { AIScaffoldChat } from '@/components/dashboard/builder/ai-scaffold-chat';
+import { ExecutionVisualizer, ExecutionState, ExecutionLog, ExecutionMetrics } from '@/components/dashboard/builder/execution-visualizer';
+import { ExecutionTimeline } from '@/components/dashboard/builder/execution-timeline';
 
 const nodeTypes = {
   entry: EntryNode,
@@ -209,6 +211,28 @@ export default function AgentBuilderPage() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'unsaved' | 'saving'>('saved');
   const [autoSave, setAutoSave] = useState(true);
+  
+  // Execution visualization states
+  const [isExecuting, setIsExecuting] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [hideEdgesDuringExecution, setHideEdgesDuringExecution] = useState(true);
+  const [executionLogs, setExecutionLogs] = useState<ExecutionLog[]>([]);
+  const [executionMetrics, setExecutionMetrics] = useState<ExecutionMetrics>({
+    totalNodes: 0,
+    completedNodes: 0,
+    failedNodes: 0,
+    averageNodeTime: 0,
+    throughput: 0,
+    memoryUsage: 0,
+    cpuUsage: 0,
+  });
+  const [executionState, setExecutionState] = useState<ExecutionState>({
+    id: '',
+    status: 'idle',
+    progress: 0,
+    logs: [],
+    metrics: executionMetrics,
+  });
 
   // Load agent if agentId is provided in URL
   useEffect(() => {
@@ -2540,6 +2564,82 @@ For each finding:
     return () => clearTimeout(autoSaveTimer);
   }, [saveStatus, autoSave, onSave]);
 
+  // Execution control functions
+  const handleStartExecution = () => {
+    setIsExecuting(true);
+    setShowTimeline(true);
+    setExecutionState(prev => ({
+      ...prev,
+      id: `exec-${Date.now()}`,
+      status: 'queued',
+      progress: 0,
+      startTime: new Date(),
+    }));
+    
+    // Initialize metrics
+    setExecutionMetrics({
+      totalNodes: nodes.length,
+      completedNodes: 0,
+      failedNodes: 0,
+      averageNodeTime: 0,
+      throughput: 0,
+      memoryUsage: Math.random() * 50 + 20, // Simulated
+      cpuUsage: Math.random() * 30 + 10, // Simulated
+    });
+
+    // Add initial log
+    const initialLog: ExecutionLog = {
+      id: `log-${Date.now()}`,
+      timestamp: new Date(),
+      level: 'info',
+      nodeId: 'system',
+      message: 'Execution started',
+      details: { flowNodes: nodes.length, flowEdges: edges.length }
+    };
+    setExecutionLogs([initialLog]);
+
+    toast({
+      title: "Execution Started",
+      description: "Your agent flow is now executing with enhanced visualization.",
+    });
+  };
+
+  const handlePauseExecution = () => {
+    setIsExecuting(false);
+    setExecutionState(prev => ({ ...prev, status: 'cancelled' }));
+    
+    const pauseLog: ExecutionLog = {
+      id: `log-${Date.now()}`,
+      timestamp: new Date(),
+      level: 'warning',
+      nodeId: 'system',
+      message: 'Execution paused by user'
+    };
+    setExecutionLogs(prev => [...prev, pauseLog]);
+  };
+
+  const handleStopExecution = () => {
+    setIsExecuting(false);
+    setExecutionState(prev => ({ ...prev, status: 'cancelled' }));
+    
+    const stopLog: ExecutionLog = {
+      id: `log-${Date.now()}`,
+      timestamp: new Date(),
+      level: 'info',
+      nodeId: 'system',
+      message: 'Execution stopped by user'
+    };
+    setExecutionLogs(prev => [...prev, stopLog]);
+  };
+
+  const handleStepThroughExecution = () => {
+    // TODO: Implement step-through debugging
+    toast({
+      title: "Step-through Mode",
+      description: "Step-through execution will be available soon.",
+    });
+  };
+
   return (
     <div className="flex-1 flex flex-col h-screen">
       {/* Header */}
@@ -2731,15 +2831,11 @@ For each finding:
             <Button 
               size="sm" 
               className="h-8 bg-primary hover:bg-primary/90"
-              onClick={() => {
-                toast({
-                  title: "Running Agent",
-                  description: "Your agent is now executing...",
-                });
-              }}
+              onClick={handleStartExecution}
+              disabled={isExecuting}
             >
               <Zap className="h-4 w-4 mr-2" />
-              Run once
+              {isExecuting ? 'Running...' : 'Run once'}
             </Button>
             
             <DropdownMenu>
@@ -2785,7 +2881,7 @@ For each finding:
           <ReactFlowProvider>
             <ReactFlow
               nodes={nodes}
-              edges={edges}
+              edges={isExecuting && hideEdgesDuringExecution ? [] : edges}
               onNodesChange={onNodesChangeWithHistory}
               onEdgesChange={onEdgesChangeWithHistory}
               onConnect={onConnect}
@@ -2802,7 +2898,7 @@ For each finding:
               nodeTypes={nodeTypes}
               connectionMode={ConnectionMode.Loose}
               defaultEdgeOptions={{
-                animated: true,
+                animated: false,
                 style: { stroke: '#60a5fa' },
               }}
               fitView
@@ -2925,6 +3021,30 @@ For each finding:
             </div>
           </div>
         )}
+
+        {/* Execution Visualizer Overlay */}
+        <ExecutionVisualizer
+          nodes={nodes}
+          edges={edges}
+          isExecuting={isExecuting}
+          onStart={handleStartExecution}
+          onPause={handlePauseExecution}
+          onStop={handleStopExecution}
+          onStepThrough={handleStepThroughExecution}
+          executionState={executionState}
+          hideEdgesDuringExecution={hideEdgesDuringExecution}
+          onToggleHideEdges={setHideEdgesDuringExecution}
+        />
+
+        {/* Execution Timeline Panel */}
+        <ExecutionTimeline
+          isOpen={showTimeline}
+          onClose={() => setShowTimeline(false)}
+          executionState={executionState}
+          logs={executionLogs}
+          metrics={executionMetrics}
+          isExecuting={isExecuting}
+        />
       </div>
     </div>
   );
