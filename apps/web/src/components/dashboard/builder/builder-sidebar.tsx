@@ -61,6 +61,16 @@ const appIntegrations = [
     popular: true
   },
   {
+    type: 'rag',
+    label: 'RAG Engine',
+    icon: Database,
+    color: 'bg-orange-600',
+    description: 'Intelligent context retrieval and knowledge search',
+    category: 'ai',
+    popular: true,
+    builtin: true
+  },
+  {
     type: 'sheets',
     label: 'Google Sheets',
     icon: FileText,
